@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "96975403456",
+    "project_id": "lacteos-san-esteban-e6d6c",
+    "storage_bucket": "lacteos-san-esteban-e6d6c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96975403456:android:53be4667efcab2fd4ab025",
+        "android_client_info": {
+          "package_name": "com.example.lacteos_san_esteban_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96975403456-68u3kacsbpcpf01cr3pcnmj8fsr7f1br.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw0Hgtfd5xVcqFy3rwkdKV9wSDPoW-84Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96975403456-68u3kacsbpcpf01cr3pcnmj8fsr7f1br.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "96975403456-1multberojh824mqbs6n077amhg5jnfd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lacteosSanEstebanApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
