@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 
 class VentasPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class VentasPage extends StatefulWidget {
 }
 
 class _VentasPageState extends State<VentasPage> {
+  final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final ventasStream = FirebaseFirestore.instance
       .collection("ventas")
       .withConverter<Venta>(
@@ -48,11 +50,11 @@ class _VentasPageState extends State<VentasPage> {
                             const SizedBox(
                               height: 10.0,
                             ),
-                            Text("Empleado: ${e.data().empleado}"),
+                            Text("Empleado: ${e.data().empleado.id}"),
                             const SizedBox(
                               height: 10.0,
                             ),
-                            Text(e.data().fecha.toDate().toLocal().toString()),
+                            Text(formatDate.format(e.data().fecha.toDate())),
                           ],
                         ),
                       ),
@@ -63,7 +65,7 @@ class _VentasPageState extends State<VentasPage> {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed("/compras_form");
+          Navigator.of(context).pushNamed("/ventas_form");
         },
         child: const Icon(Icons.add),
       ),

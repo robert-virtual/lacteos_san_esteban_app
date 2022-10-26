@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   try {
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email.text, password: password.text);
+                        email: email.text.trim(), password: password.text);
                   } catch (e) {
                     showDialog(
                       context: context,
@@ -79,11 +79,11 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const[
-                     Text(
+                  children: const [
+                    Text(
                       "Entrar",
                     ),
-                     SizedBox(
+                    SizedBox(
                       width: 15,
                     ),
                     Icon(

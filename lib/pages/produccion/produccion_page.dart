@@ -8,17 +8,18 @@ class ProduccionPage extends StatefulWidget {
 }
 
 class _ProduccionPageState extends State<ProduccionPage> {
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-    appBar:  AppBar(title: const Text("Produccion"),),
-      body:  const Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Produccion"),
+      ),
+      body: const Center(
         child: Text("Produccion"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed("/compras_form");
+          Navigator.of(context).pushNamed("/produccion_form");
         },
         child: const Icon(Icons.add),
       ),

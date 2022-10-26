@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Producto {
   String producto;
-  bool compra;
-  Producto({required this.producto, required this.compra});
+  Producto({required this.producto});
   factory Producto.fromJson(Map<String, dynamic> map) {
-    return Producto(compra: map["compra"], producto: map["producto"]);
+    return Producto(producto: map["producto"]);
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      "producto": producto,
+    };
   }
 }
 
@@ -13,42 +18,53 @@ class DetalleVenta {
   int cantidad;
   double precio;
   Producto? producto;
-  DetalleVenta({required this.cantidad, required this.precio, this.producto});
+  String unidadMedida;
+  DetalleVenta(
+      {required this.unidadMedida,
+      required this.cantidad,
+      required this.precio,
+      this.producto});
   factory DetalleVenta.fromJson(Map<String, dynamic> map) {
     return DetalleVenta(
+      unidadMedida: map["unidad_medida"],
       precio: (map["precio"] as int).toDouble(),
       cantidad: map["cantidad"],
     );
   }
   Map<String, dynamic> toJson() {
     return {
+      "unidad_medida": unidadMedida,
       "precio": precio,
       "cantidad": cantidad,
     };
   }
 }
 
-class Cliente {
+class Persona {
   String correo;
   String direccion;
   String telefono;
   String nombre;
-  Cliente({
+  Timestamp fechaRegistro;
+  Persona({
     required this.correo,
+    required this.fechaRegistro,
     required this.direccion,
     required this.telefono,
     required this.nombre,
   });
 
-  factory Cliente.fromJson(Map<String, dynamic> map) {
-    return Cliente(
+  factory Persona.fromJson(Map<String, dynamic> map) {
+    return Persona(
         correo: map["correo"],
+        fechaRegistro: map["fecha_registro"],
         direccion: map["direccion"],
         telefono: map["telefono"],
         nombre: map["nombre"]);
   }
   Map<String, dynamic> toJson() {
     return {
+      "fecha_registro": fechaRegistro,
       "correo": correo,
       "direccion": direccion,
       "telefono": telefono,
@@ -58,8 +74,8 @@ class Cliente {
 }
 
 class Venta {
-  DocumentReference<Cliente> cliente;
-  String empleado;
+  DocumentReference<Persona> cliente;
+  DocumentReference<Persona> empleado;
   List<DetalleVenta> detalles;
   Timestamp fecha;
   Venta({
@@ -70,9 +86,11 @@ class Venta {
   });
   factory Venta.fromJson(Map<String, dynamic> map) {
     return Venta(
-      empleado: map["empleado"],
-      cliente: (map["cliente"] as DocumentReference).withConverter<Cliente>(
-          fromFirestore: (snap, _) => Cliente.fromJson(snap.data()!),
+      empleado: (map["empleado"] as DocumentReference).withConverter<Persona>(
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+          toFirestore: (empleado, _) => empleado.toJson()),
+      cliente: (map["cliente"] as DocumentReference).withConverter<Persona>(
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
           toFirestore: (cliente, _) => cliente.toJson()),
       fecha: map["fecha"],
       detalles: List.from(map["detalles"])

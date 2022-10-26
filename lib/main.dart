@@ -26,7 +26,7 @@ Future<void> main() async {
       "/login": (context) => const LoginPage(),
       "/home": (context) => const HomePage(),
       "/compras_form": (context) => const ComprasForm(),
-      "/ventas_form": (context) => const VentasForm(),
+      "/ventas_form": (context) => VentasForm(),
       "/produccion_form": (context) => const ProduccionForm(),
     },
   ));
