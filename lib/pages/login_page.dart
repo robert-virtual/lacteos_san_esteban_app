@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lacteos_san_esteban_app/models/venta.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,7 +19,11 @@ class _LoginPageState extends State<LoginPage> {
 
     FirebaseAuth.instance.authStateChanges().listen((User? user_) {
       if (user_ != null) {
-        Navigator.of(context).popAndPushNamed("/home");
+        if (user_.displayName != null) {
+          Navigator.of(context).popAndPushNamed("/home");
+          return;
+        }
+        Navigator.of(context).popAndPushNamed("/cuenta");
       }
     });
   }
@@ -57,7 +63,9 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   try {
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email.text.trim(), password: password.text);
+                      email: email.text.trim(),
+                      password: password.text,
+                    );
                   } catch (e) {
                     showDialog(
                       context: context,

@@ -11,6 +11,7 @@ class VentasForm extends StatelessWidget {
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final productosStream = FirebaseFirestore.instance
       .collection("tipos_productos")
+      .where("venta", isEqualTo: true)
       .withConverter<Producto>(
           fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
           toFirestore: (producto, _) => producto.toJson())
@@ -30,12 +31,12 @@ class VentasForm extends StatelessWidget {
           fromFirestore: (snap, _) => Venta.fromJson(snap.data()!),
           toFirestore: (venta, _) => venta.toJson());
   var detalles = List<DetalleVenta>.empty().obs;
-  var cliente = Rx<String?>(null);
+  var cliente = Rx<DocumentReference<Persona>?>(null);
   final cantidad = TextEditingController();
   final precio = TextEditingController();
   /* List<String> unidadesMedida = ["Libras", "Cajas", "Unidades"]; */
   var unidadMedida = Rx<String?>(null);
-  var producto = Rx<String?>(null);
+  var producto = Rx<DocumentReference<Producto>?>(null);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +72,7 @@ class VentasForm extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Obx(
-                          () => DropdownButton<String>(
+                          () => DropdownButton<DocumentReference<Persona>>(
                             value: cliente.value,
                             onChanged: (text) {
                               if (text != null) {
@@ -81,7 +82,7 @@ class VentasForm extends StatelessWidget {
                             items: snap.data!.docs
                                 .map(
                                   (e) => DropdownMenuItem(
-                                    value: e.id,
+                                    value: e.reference,
                                     child: Text(e.data().nombre),
                                   ),
                                 )
@@ -153,9 +154,7 @@ class VentasForm extends StatelessWidget {
                     },
                     child: ListTile(
                       title: Text(
-                        detalle.producto != null
-                            ? detalle.producto!.producto
-                            : "Producto sin Nombre",
+                        detalle.producto.id,
                       ),
                       subtitle: Text(
                         "Cantidad: ${detalle.cantidad} ${detalle.unidadMedida}, Precio: ${detalle.precio}, Subtotal: ${detalle.precio * detalle.cantidad}",
@@ -175,7 +174,14 @@ class VentasForm extends StatelessWidget {
           const SizedBox(width: 10.0),
           FloatingActionButton.extended(
             onPressed: () {
-              /* ventasRef.add(Venta(cliente: , empleado: FirebaseAuth.instance.currentUser.email, fecha: fecha, detalles: detalles)) */
+              /* ventasRef.add( */
+              /*   Venta( */
+              /*     cliente: cliente.value!, */
+              /*     empleado: , */
+              /*     fecha: Timestamp.now(), */
+              /*     detalles: detalles, */
+              /*   ), */
+              /* ); */
             },
             label: const Text("Guardar"),
             icon: const Icon(Icons.save),
@@ -229,7 +235,7 @@ class VentasForm extends StatelessWidget {
                     );
                   }
                   return Obx(
-                    () => DropdownButton<String>(
+                    () => DropdownButton<DocumentReference<Producto>>(
                       value: producto.value,
                       onChanged: (text) {
                         if (text != null) {
@@ -239,7 +245,7 @@ class VentasForm extends StatelessWidget {
                       items: snap.data!.docs
                           .map(
                             (e) => DropdownMenuItem(
-                              value: e.data().producto,
+                              value: e.reference,
                               child: Text(e.data().producto),
                             ),
                           )
@@ -317,9 +323,7 @@ class VentasForm extends StatelessWidget {
                             unidadMedida.value ?? "Sin unidad de medida",
                         precio: double.parse(precio.text),
                         cantidad: int.parse(cantidad.text),
-                        producto: Producto(
-                          producto: producto.value ?? "Producto sin nombre",
-                        ),
+                        producto: producto.value!,
                       ),
                     );
                     Navigator.pop(context);

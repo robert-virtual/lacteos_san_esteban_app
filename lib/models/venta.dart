@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,15 +19,18 @@ class Producto {
 class DetalleVenta {
   int cantidad;
   double precio;
-  Producto? producto;
+  DocumentReference<Producto> producto;
   String unidadMedida;
   DetalleVenta(
       {required this.unidadMedida,
       required this.cantidad,
       required this.precio,
-      this.producto});
+      required this.producto});
   factory DetalleVenta.fromJson(Map<String, dynamic> map) {
     return DetalleVenta(
+      producto: (map["producto"] as DocumentReference).withConverter<Producto>(
+          fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
+          toFirestore: (producto, _) => producto.toJson()),
       unidadMedida: map["unidad_medida"],
       precio: (map["precio"] as int).toDouble(),
       cantidad: map["cantidad"],

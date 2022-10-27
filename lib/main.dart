@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_form.dart';
+import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
 import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 import 'package:lacteos_san_esteban_app/pages/login_page.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_form.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
       "/compras_form": (context) => const ComprasForm(),
       "/ventas_form": (context) => VentasForm(),
       "/produccion_form": (context) => const ProduccionForm(),
+      "/cuenta": (context) => const CuentaPage(),
     },
   ));
 }
