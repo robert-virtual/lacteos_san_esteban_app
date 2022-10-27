@@ -116,15 +116,18 @@ class _CuentaPageState extends State<CuentaPage> {
                             Persona.fromJson(snap.data()!),
                         toFirestore: (empleado, _) => empleado.toJson(),
                       );
-                  empleados.add(
-                    Persona(
-                      correo: user.email!,
-                      fechaRegistro: Timestamp.now(),
-                      direccion: direccion.text,
-                      telefono: telefono.text,
-                      nombre: nombre.text,
-                    ),
-                  );
+                  empleados.doc(user.email).set(
+                        Persona(
+                          correo: user.email!,
+                          fechaRegistro: Timestamp.now(),
+                          direccion: direccion.text,
+                          telefono: telefono.text,
+                          nombre: nombre.text,
+                        ),
+                      );
+                  /* empleados.add( */
+                  /*   , */
+                  /* ); */
                   Navigator.of(context).popAndPushNamed("/home");
                 } catch (e) {
                   showDialog(

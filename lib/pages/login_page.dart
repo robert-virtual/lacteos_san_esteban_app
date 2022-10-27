@@ -13,18 +13,26 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
+  CollectionReference empleados =
+      FirebaseFirestore.instance.collection("empleados").withConverter<Persona>(
+            fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+            toFirestore: (empleado, _) => empleado.toJson(),
+          );
   @override
   void initState() {
     super.initState();
 
     FirebaseAuth.instance.authStateChanges().listen((User? user_) {
-      if (user_ != null) {
-        if (user_.displayName != null) {
+      if (user_ == null) {
+        return;
+      }
+      empleados.doc(user_.email).get().then((value) {
+        if (value.exists) {
           Navigator.of(context).popAndPushNamed("/home");
           return;
         }
         Navigator.of(context).popAndPushNamed("/cuenta");
-      }
+      });
     });
   }
 
@@ -36,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
+              Image.asset("/images/san_esteban.jpg"),
               const Text(
                 "Iniciar Sesion",
                 textAlign: TextAlign.center,
