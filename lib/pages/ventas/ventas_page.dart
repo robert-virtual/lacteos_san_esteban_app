@@ -3,14 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 
-class VentasPage extends StatefulWidget {
-  const VentasPage({super.key});
+class VentasPage extends StatelessWidget {
+  VentasPage({super.key});
 
-  @override
-  State<VentasPage> createState() => _VentasPageState();
-}
-
-class _VentasPageState extends State<VentasPage> {
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final ventasStream = FirebaseFirestore.instance
       .collection("ventas")
