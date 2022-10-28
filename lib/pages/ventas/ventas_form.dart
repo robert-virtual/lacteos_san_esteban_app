@@ -191,6 +191,27 @@ class VentasForm extends StatelessWidget {
           const SizedBox(width: 10.0),
           FloatingActionButton.extended(
             onPressed: () {
+              if (cliente.value == null || detalles.isEmpty) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Guardar Venta"),
+                      content: const Text(
+                          "Debes seleccionar un cliente y agregar productos a la venta "),
+                      actions: [
+                        TextButton(
+                          child: const Text("Ok"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+                return;
+              }
               ventasRef
                   .add(
                 Venta(
@@ -370,10 +391,33 @@ class VentasForm extends StatelessWidget {
                     child: const Text("Cancelar")),
                 TextButton(
                   onPressed: () {
+                    if (unidadMedida.value == null ||
+                        precio.text.trim().isEmpty ||
+                        cantidad.text.trim().isEmpty ||
+                        producto.value == null) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Agregar producto"),
+                            content:
+                                const Text("Debes ingresar todos los campos"),
+                            actions: [
+                              TextButton(
+                                child: const Text("Ok"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
                     detalles.add(
                       DetalleVenta(
-                        unidadMedida:
-                            unidadMedida.value ?? "Sin unidad de medida",
+                        unidadMedida: unidadMedida.value!,
                         precio: double.parse(precio.text),
                         cantidad: int.parse(cantidad.text),
                         producto: producto.value!,
