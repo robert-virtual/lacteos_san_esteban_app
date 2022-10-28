@@ -32,12 +32,13 @@ class DetalleVenta {
           fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
           toFirestore: (producto, _) => producto.toJson()),
       unidadMedida: map["unidad_medida"],
-      precio: (map["precio"] as int).toDouble(),
+      precio: double.parse("${map["precio"]}"),
       cantidad: map["cantidad"],
     );
   }
   Map<String, dynamic> toJson() {
     return {
+      "producto": producto,
       "unidad_medida": unidadMedida,
       "precio": precio,
       "cantidad": cantidad,
@@ -107,9 +108,10 @@ class Venta {
   }
   Map<String, dynamic> toJson() {
     return {
+      "cliente": cliente,
       "empleado": empleado,
       "fecha": fecha,
-      "detalles": detalles.map((e) => e.toJson())
+      "detalles": detalles.map((e) => e.toJson()).toList()
     };
   }
 }

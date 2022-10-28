@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              Image.asset("/images/san_esteban.jpg"),
+              Image.asset("images/san_esteban.jpg"),
               const Text(
                 "Iniciar Sesion",
                 textAlign: TextAlign.center,

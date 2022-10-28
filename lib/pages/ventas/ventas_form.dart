@@ -25,6 +25,11 @@ class VentasForm extends StatelessWidget {
           toFirestore: (cliente, _) => cliente.toJson())
       .snapshots();
 
+  final empleadosRef = FirebaseFirestore.instance
+      .collection("empleados")
+      .withConverter<Persona>(
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+          toFirestore: (empleado, _) => empleado.toJson());
   final ventasRef = FirebaseFirestore.instance
       .collection("ventas")
       .withConverter<Venta>(
@@ -34,7 +39,6 @@ class VentasForm extends StatelessWidget {
   var cliente = Rx<DocumentReference<Persona>?>(null);
   final cantidad = TextEditingController();
   final precio = TextEditingController();
-  /* List<String> unidadesMedida = ["Libras", "Cajas", "Unidades"]; */
   var unidadMedida = Rx<String?>(null);
   var producto = Rx<DocumentReference<Producto>?>(null);
   @override
@@ -48,11 +52,25 @@ class VentasForm extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, top: 15.0),
-                  child: Text(
-                    "Cliente",
-                    style: TextStyle(fontSize: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, top: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Cliente",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed("/clientes_form");
+                        },
+                        child: Row(children: const [
+                          Icon(Icons.add),
+                          Text("Nuevo Cliente")
+                        ]),
+                      ),
+                    ],
                   ),
                 ),
                 StreamBuilder(
@@ -68,7 +86,6 @@ class VentasForm extends StatelessWidget {
                           child: Text("Ups ha habido un error"),
                         );
                       }
-
                       return Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Obx(
@@ -118,7 +135,7 @@ class VentasForm extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  buildShowModalBottomSheet(context);
+                  buildAgregarProductoBottomSheet(context);
                 },
                 child: Row(children: const [Icon(Icons.add), Text("Agregar")]),
               ),
@@ -174,14 +191,45 @@ class VentasForm extends StatelessWidget {
           const SizedBox(width: 10.0),
           FloatingActionButton.extended(
             onPressed: () {
-              /* ventasRef.add( */
-              /*   Venta( */
-              /*     cliente: cliente.value!, */
-              /*     empleado: , */
-              /*     fecha: Timestamp.now(), */
-              /*     detalles: detalles, */
-              /*   ), */
-              /* ); */
+              ventasRef
+                  .add(
+                Venta(
+                  cliente: cliente.value!,
+                  empleado: empleadosRef
+                      .doc(FirebaseAuth.instance.currentUser!.email),
+                  fecha: Timestamp.now(),
+                  detalles: detalles,
+                ),
+              )
+                  .then((value) {
+                const snackbar =
+                    SnackBar(content: Text("Venta guardada con exito"));
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+
+                Navigator.of(context).pop();
+              }).catchError(
+                (err) {
+                  print(err);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Guardar Venta"),
+                        content:
+                            const Text("Hubo un error al guardar la venta"),
+                        actions: [
+                          TextButton(
+                            child: const Text("Ok"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
             },
             label: const Text("Guardar"),
             icon: const Icon(Icons.save),
@@ -191,7 +239,7 @@ class VentasForm extends StatelessWidget {
     );
   }
 
-  Future<dynamic> buildShowModalBottomSheet(BuildContext context) {
+  Future<dynamic> buildAgregarProductoBottomSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
       builder: (context) => Padding(
@@ -254,13 +302,6 @@ class VentasForm extends StatelessWidget {
                   );
                 }),
             TextField(
-              controller: precio,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                label: Text("Precio Total"),
-              ),
-            ),
-            TextField(
               controller: cantidad,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
@@ -287,6 +328,11 @@ class VentasForm extends StatelessWidget {
                     child: Text("Ups ha habido un error"),
                   );
                 }
+                final e =
+                    snap.data!.docs.firstWhereOrNull((e) => e.id == "libras");
+                if (e != null) {
+                  unidadMedida.value = e.id;
+                }
                 return Obx(
                   () => DropdownButton<String>(
                     value: unidadMedida.value,
@@ -306,6 +352,13 @@ class VentasForm extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            TextField(
+              controller: precio,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                label: Text("Precio Total"),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
