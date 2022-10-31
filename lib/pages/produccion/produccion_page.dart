@@ -39,7 +39,7 @@ class ProduccionPage extends StatelessWidget {
                   const boldtext = TextStyle(fontWeight: FontWeight.bold);
                   final items = <Widget>[
                     Text(
-                      "${e.data().cantidadProducida} ${e.data().unidadMedida} de ${e.data().producto.id}",
+                      "${e.data().cantidadProducida} de ${e.data().producto.id}",
                       style: boldtext,
                     ),
                     const SizedBox(
@@ -56,8 +56,7 @@ class ProduccionPage extends StatelessWidget {
                   items.addAll(
                     e.data().insumos.map(
                       (d) {
-                        return Text(
-                            "${d.cantidad} ${d.unidadMedida} ${d.producto}");
+                        return Text("${d.cantidad} ${d.producto}");
                       },
                     ),
                   );

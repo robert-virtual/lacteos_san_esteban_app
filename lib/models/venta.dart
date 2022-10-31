@@ -1,15 +1,37 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Producto {
   String producto;
-  Producto({required this.producto});
+  bool? compra;
+  bool? insumo;
+  bool? venta;
+  String? unidad;
+  Producto(
+      {this.venta,
+      this.compra,
+      this.insumo,
+      this.unidad,
+      required this.producto});
   factory Producto.fromJson(Map<String, dynamic> map) {
-    return Producto(producto: map["producto"]);
+    return Producto(
+      unidad: map["unidad"],
+      compra: map["compra"],
+      venta: map["venta"],
+      insumo: map["insumo"],
+      producto: map["producto"],
+    );
   }
   Map<String, dynamic> toJson() {
     return {
       "producto": producto,
     };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(this);
   }
 }
 

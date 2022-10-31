@@ -10,9 +10,10 @@ class ProduccionForm extends StatelessWidget {
   ProduccionForm({super.key});
 
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
-  final productosCompraStream = FirebaseFirestore.instance
+  var productos = <QueryDocumentSnapshot<Producto>>[].obs;
+  final productosInsumoStream = FirebaseFirestore.instance
       .collection("tipos_productos")
-      .where("compra", isEqualTo: true)
+      .where("insumo", isEqualTo: true)
       .withConverter<Producto>(
           fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
           toFirestore: (producto, _) => producto.toJson())
@@ -44,7 +45,7 @@ class ProduccionForm extends StatelessWidget {
   var unidadMedida = Rx<String?>(null);
   var unidadMedidaProducto = Rx<String?>(null);
   var producto = Rx<DocumentReference<Producto>?>(null);
-  var productoCompra = Rx<DocumentReference<Producto>?>(null);
+  var productoInsumo = Rx<DocumentReference<Producto>?>(null);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,56 +122,8 @@ class ProduccionForm extends StatelessWidget {
                     controller: cantidadProducida,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      label: Text("Cantidad Producida"),
+                      label: Text("Libras Producidas"),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "Unidad de Medida",
-                    style: TextStyle(color: Theme.of(context).hintColor),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: StreamBuilder(
-                    stream: unidadesMedidaStream,
-                    builder: (context, snap) {
-                      if (snap.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (snap.hasError) {
-                        return const Center(
-                          child: Text("Ups ha habido un error"),
-                        );
-                      }
-                      /* final e = */
-                      /*     snap.data!.docs.firstWhereOrNull((e) => e.id == "libras"); */
-                      /* if (e != null) { */
-                      /*   unidadMedida.value = e.id; */
-                      /* } */
-                      return Obx(
-                        () => DropdownButton<String>(
-                          value: unidadMedidaProducto.value,
-                          onChanged: (text) {
-                            if (text != null) {
-                              unidadMedidaProducto.value = text;
-                            }
-                          },
-                          items: snap.data!.docs
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e.id,
-                                  child: Text(e.data()["unidad"]),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
-                    },
                   ),
                 ),
                 Padding(
@@ -189,7 +142,7 @@ class ProduccionForm extends StatelessWidget {
             primary: false,
             automaticallyImplyLeading: false,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: const Text("Insumos"),
+            title: Obx(() => Text("Insumos: ${insumos.length}")),
             actions: [
               TextButton(
                 onPressed: () {
@@ -233,7 +186,7 @@ class ProduccionForm extends StatelessWidget {
                         insumo.producto,
                       ),
                       subtitle: Text(
-                        "Cantidad: ${insumo.cantidad} ${insumo.unidadMedida}, Subtotal: ${insumo.cantidad}",
+                        "Cantidad: ${insumo.cantidad} , Subtotal: ${insumo.cantidad}",
                       ),
                     ),
                   );
@@ -250,14 +203,14 @@ class ProduccionForm extends StatelessWidget {
           const SizedBox(width: 10.0),
           FloatingActionButton.extended(
             onPressed: () {
-              if (insumos.isEmpty) {
+              if (producto.value == null || insumos.isEmpty) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text("Guardar Venta"),
+                      title: const Text("Guardar"),
                       content: const Text(
-                          "Debes seleccionar un cliente y agregar productos a la venta "),
+                          "Debes seleccionar un producto y agregar insumos"),
                       actions: [
                         TextButton(
                           child: const Text("Ok"),
@@ -274,8 +227,10 @@ class ProduccionForm extends StatelessWidget {
               produccionRef
                   .add(
                 Produccion(
-                  cantidadProducida: double.parse(cantidad.text),
-                  unidadMedida: "",
+                  cantidadProducida:
+                      "${cantidad.text} ${productoInsumo.value != null ? productos.firstWhere(
+                            (p0) => p0.reference == productoInsumo.value,
+                          ).data().unidad : ""}",
                   empleado: empleadosRef
                       .doc(FirebaseAuth.instance.currentUser!.email),
                   fecha: Timestamp.now(),
@@ -285,20 +240,19 @@ class ProduccionForm extends StatelessWidget {
               )
                   .then((value) {
                 const snackbar =
-                    SnackBar(content: Text("Venta guardada con exito"));
+                    SnackBar(content: Text("Produccion guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
                 Navigator.of(context).pop();
               }).catchError(
                 (err) {
-                  print(err);
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text("Guardar Venta"),
-                        content:
-                            const Text("Hubo un error al guardar la venta"),
+                        title: const Text("Guardar Produccion"),
+                        content: const Text(
+                            "Hubo un error al guardar la Produccion"),
                         actions: [
                           TextButton(
                             child: const Text("Ok"),
@@ -352,7 +306,7 @@ class ProduccionForm extends StatelessWidget {
               ),
             ),
             StreamBuilder(
-                stream: productosCompraStream,
+                stream: productosInsumoStream,
                 builder: (context, snap) {
                   if (snap.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -364,76 +318,36 @@ class ProduccionForm extends StatelessWidget {
                       child: Text("Ups ha habido un error"),
                     );
                   }
+                  productos.value = snap.data!.docs;
                   return Obx(
                     () => DropdownButton<DocumentReference<Producto>>(
-                      value: productoCompra.value,
+                      value: productoInsumo.value,
                       onChanged: (text) {
                         if (text != null) {
-                          productoCompra.value = text;
+                          productoInsumo.value = text;
                         }
                       },
-                      items: snap.data!.docs
-                          .map(
-                            (e) => DropdownMenuItem(
-                              value: e.reference,
-                              child: Text(e.data().producto),
-                            ),
-                          )
-                          .toList(),
+                      items: productos.map(
+                        (e) {
+                          return DropdownMenuItem(
+                            value: e.reference,
+                            child: Text(e.data().producto),
+                          );
+                        },
+                      ).toList(),
                     ),
                   );
                 }),
             TextField(
               controller: cantidad,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                label: Text("Cantidad"),
+              decoration: InputDecoration(
+                hintText: "Cantidad",
+                labelText:
+                    "Cantidad usada ${productoInsumo.value != null ? productos.firstWhere(
+                          (p0) => p0.reference == productoInsumo.value,
+                        ).data().unidad : ""} ",
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Text(
-                "Unidad de Medida",
-                style: TextStyle(color: Theme.of(context).hintColor),
-              ),
-            ),
-            StreamBuilder(
-              stream: unidadesMedidaStream,
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (snap.hasError) {
-                  return const Center(
-                    child: Text("Ups ha habido un error"),
-                  );
-                }
-                /* final e = */
-                /*     snap.data!.docs.firstWhereOrNull((e) => e.id == "libras"); */
-                /* if (e != null) { */
-                /*   unidadMedida.value = e.id; */
-                /* } */
-                return Obx(
-                  () => DropdownButton<String>(
-                    value: unidadMedida.value,
-                    onChanged: (text) {
-                      if (text != null) {
-                        unidadMedida.value = text;
-                      }
-                    },
-                    items: snap.data!.docs
-                        .map(
-                          (e) => DropdownMenuItem(
-                            value: e.id,
-                            child: Text(e.data()["unidad"]),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                );
-              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -445,10 +359,8 @@ class ProduccionForm extends StatelessWidget {
                     child: const Text("Cancelar")),
                 TextButton(
                   onPressed: () {
-                    if (unidadMedida.value == null ||
-                        precio.text.trim().isEmpty ||
-                        cantidad.text.trim().isEmpty ||
-                        producto.value == null) {
+                    if (cantidad.text.trim().isEmpty ||
+                        productoInsumo.value == null) {
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -471,9 +383,8 @@ class ProduccionForm extends StatelessWidget {
                     }
                     insumos.add(
                       DetalleInsumo(
-                        unidadMedida: unidadMedida.value!,
-                        cantidad: int.parse(cantidad.text),
-                        producto: producto.value!.id,
+                        cantidad: cantidad.text,
+                        producto: productoInsumo.value!.id,
                       ),
                     );
                     Navigator.pop(context);
