@@ -35,28 +35,62 @@ class ComprasPage extends StatelessWidget {
           }
           return ListView(
             padding: const EdgeInsets.all(10.0),
-            children: snap.data!.docs
-                .map(
-                  (e) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text("Proveedor: ${e.data().proveedor.id}"),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Text("Empleado: ${e.data().empleado.id}"),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Text(formatDate.format(e.data().fecha.toDate())),
-                        ],
-                      ),
+            children: snap.data!.docs.map(
+              (e) {
+                const boldtext = TextStyle(fontWeight: FontWeight.bold);
+                final items = <Widget>[
+                  const Text(
+                    "Productos:",
+                    style: boldtext,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                ];
+                double total = 0;
+                items.addAll(
+                  e.data().detalles.map(
+                    (d) {
+                      total += d.precio;
+                      return Text(
+                          "${d.cantidad} ${d.unidadMedida} ${d.producto.id} L.${d.precio}");
+                    },
+                  ),
+                );
+                items.addAll([
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    "Total: $total",
+                    style: boldtext,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text("Proveedor: ${e.data().proveedor.id}"),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    "Empleado: ${e.data().empleado.id}",
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(formatDate.format(e.data().fecha.toDate())),
+                ]);
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: items,
                     ),
                   ),
-                )
-                .toList(),
+                );
+              },
+            ).toList(),
           );
         },
       ),
