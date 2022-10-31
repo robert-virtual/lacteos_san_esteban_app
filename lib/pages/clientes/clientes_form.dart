@@ -75,7 +75,6 @@ class ClientesForm extends StatelessWidget {
           )
               .then(
             (value) {
-              print("res $res");
               Navigator.pop(context, res);
             },
           );

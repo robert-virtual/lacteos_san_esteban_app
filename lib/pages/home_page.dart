@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lacteos_san_esteban_app/pages/clientes/clientes.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_page.dart';
 import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_page.dart';
+import 'package:lacteos_san_esteban_app/pages/proveedores/proveedores.dart';
 import 'package:lacteos_san_esteban_app/pages/ventas/ventas_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,6 +22,8 @@ class _HomePageState extends State<HomePage> {
         VentasPage(),
         ComprasPage(),
         const ProduccionPage(),
+        ClientesPage(),
+        ProveedoresPage(),
         const CuentaPage()
       ]),
       bottomNavigationBar: BottomNavigationBar(
@@ -39,6 +43,14 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               label: "Produccion",
               icon: Icon(Icons.factory),
+            ),
+            BottomNavigationBarItem(
+              label: "Clientes",
+              icon: Icon(Icons.people),
+            ),
+            BottomNavigationBarItem(
+              label: "Proveedores",
+              icon: Icon(Icons.local_shipping),
             ),
             BottomNavigationBarItem(
               label: "Cuenta",
