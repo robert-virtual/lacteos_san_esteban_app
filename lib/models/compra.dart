@@ -19,7 +19,7 @@ class Compra {
           toFirestore: (empleado, _) => empleado.toJson()),
       proveedor: (map["proveedor"] as DocumentReference).withConverter<Persona>(
           fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
-          toFirestore: (cliente, _) => cliente.toJson()),
+          toFirestore: (proveedor, _) => proveedor.toJson()),
       fecha: map["fecha"],
       detalles: List.from(map["detalles"])
           .map(

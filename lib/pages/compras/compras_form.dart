@@ -12,30 +12,30 @@ class ComprasForm extends StatelessWidget {
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final productosStream = FirebaseFirestore.instance
       .collection("tipos_productos")
-      .where("venta", isEqualTo: true)
+      .where("compra", isEqualTo: true)
       .withConverter<Producto>(
-      fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
-      toFirestore: (producto, _) => producto.toJson())
+          fromFirestore: (snap, _) => Producto.fromJson(snap.data()!),
+          toFirestore: (producto, _) => producto.toJson())
       .snapshots();
   final unidadesMedidaStream =
-  FirebaseFirestore.instance.collection("unidades_medida").snapshots();
-  final clientesStream = FirebaseFirestore.instance
+      FirebaseFirestore.instance.collection("unidades_medida").snapshots();
+  final proveedoresStream = FirebaseFirestore.instance
       .collection("proveedores")
       .withConverter<Persona>(
-      fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
-      toFirestore: (proveedores, _) => proveedores.toJson())
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+          toFirestore: (proveedores, _) => proveedores.toJson())
       .snapshots();
 
   final empleadosRef = FirebaseFirestore.instance
       .collection("empleados")
       .withConverter<Persona>(
-      fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
-      toFirestore: (empleado, _) => empleado.toJson());
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+          toFirestore: (empleado, _) => empleado.toJson());
   final comprasRef = FirebaseFirestore.instance
       .collection("compras")
       .withConverter<Compra>(
-      fromFirestore: (snap, _) => Compra.fromJson(snap.data()!),
-      toFirestore: (compra, _) => compra.toJson());
+          fromFirestore: (snap, _) => Compra.fromJson(snap.data()!),
+          toFirestore: (compra, _) => compra.toJson());
   var detalles = List<DetalleVenta>.empty().obs;
   var cliente = Rx<DocumentReference<Persona>?>(null);
   final cantidad = TextEditingController();
@@ -44,7 +44,6 @@ class ComprasForm extends StatelessWidget {
   var producto = Rx<DocumentReference<Producto>?>(null);
 
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -66,7 +65,7 @@ class ComprasForm extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed("/clientes_form");
+                          Navigator.of(context).pushNamed("/proveedores_form");
                         },
                         child: Row(children: const [
                           Icon(Icons.add),
@@ -77,7 +76,7 @@ class ComprasForm extends StatelessWidget {
                   ),
                 ),
                 StreamBuilder(
-                    stream: clientesStream,
+                    stream: proveedoresStream,
                     builder: (context, snap) {
                       if (snap.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -92,7 +91,7 @@ class ComprasForm extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Obx(
-                              () => DropdownButton<DocumentReference<Persona>>(
+                          () => DropdownButton<DocumentReference<Persona>>(
                             value: cliente.value,
                             onChanged: (text) {
                               if (text != null) {
@@ -102,10 +101,10 @@ class ComprasForm extends StatelessWidget {
                             items: snap.data!.docs
                                 .map(
                                   (e) => DropdownMenuItem(
-                                value: e.reference,
-                                child: Text(e.data().nombre),
-                              ),
-                            )
+                                    value: e.reference,
+                                    child: Text(e.data().nombre),
+                                  ),
+                                )
                                 .toList(),
                           ),
                         ),
@@ -128,7 +127,7 @@ class ComprasForm extends StatelessWidget {
             automaticallyImplyLeading: false,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             title: Obx(
-                  () {
+              () {
                 final total = detalles.isNotEmpty
                     ? detalles.map((e) => e.precio).reduce((pv, cv) => pv + cv)
                     : 0;
@@ -145,9 +144,9 @@ class ComprasForm extends StatelessWidget {
             ],
           ),
           Obx(
-                () => SliverList(
+            () => SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, idx) {
+                (context, idx) {
                   final detalle = detalles[idx];
                   return Dismissible(
                     background: Container(
@@ -227,12 +226,12 @@ class ComprasForm extends StatelessWidget {
               )
                   .then((value) {
                 const snackbar =
-                SnackBar(content: Text("Venta guardada con exito"));
+                    SnackBar(content: Text("Venta guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
                 Navigator.of(context).pop();
               }).catchError(
-                    (err) {
+                (err) {
                   print(err);
                   showDialog(
                     context: context,
@@ -240,7 +239,7 @@ class ComprasForm extends StatelessWidget {
                       return AlertDialog(
                         title: const Text("Guardar Venta"),
                         content:
-                        const Text("Hubo un error al guardar la venta"),
+                            const Text("Hubo un error al guardar la venta"),
                         actions: [
                           TextButton(
                             child: const Text("Ok"),
@@ -307,7 +306,7 @@ class ComprasForm extends StatelessWidget {
                     );
                   }
                   return Obx(
-                        () => DropdownButton<DocumentReference<Producto>>(
+                    () => DropdownButton<DocumentReference<Producto>>(
                       value: producto.value,
                       onChanged: (text) {
                         if (text != null) {
@@ -317,10 +316,10 @@ class ComprasForm extends StatelessWidget {
                       items: snap.data!.docs
                           .map(
                             (e) => DropdownMenuItem(
-                          value: e.reference,
-                          child: Text(e.data().producto),
-                        ),
-                      )
+                              value: e.reference,
+                              child: Text(e.data().producto),
+                            ),
+                          )
                           .toList(),
                     ),
                   );
@@ -353,12 +352,12 @@ class ComprasForm extends StatelessWidget {
                   );
                 }
                 final e =
-                snap.data!.docs.firstWhereOrNull((e) => e.id == "libras");
-                if (e != null) {
+                    snap.data!.docs.firstWhereOrNull((e) => e.id == "libras");
+                if (e != null && unidadMedida.value == null) {
                   unidadMedida.value = e.id;
                 }
                 return Obx(
-                      () => DropdownButton<String>(
+                  () => DropdownButton<String>(
                     value: unidadMedida.value,
                     onChanged: (text) {
                       if (text != null) {
@@ -368,10 +367,10 @@ class ComprasForm extends StatelessWidget {
                     items: snap.data!.docs
                         .map(
                           (e) => DropdownMenuItem(
-                        value: e.id,
-                        child: Text(e.data()["unidad"]),
-                      ),
-                    )
+                            value: e.id,
+                            child: Text(e.data()["unidad"]),
+                          ),
+                        )
                         .toList(),
                   ),
                 );
@@ -404,7 +403,7 @@ class ComprasForm extends StatelessWidget {
                           return AlertDialog(
                             title: const Text("Agregar producto"),
                             content:
-                            const Text("Debes ingresar todos los campos"),
+                                const Text("Debes ingresar todos los campos"),
                             actions: [
                               TextButton(
                                 child: const Text("Ok"),
