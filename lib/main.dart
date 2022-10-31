@@ -30,7 +30,7 @@ Future<void> main() async {
       "/home": (context) => const HomePage(),
       "/compras_form": (context) => ComprasForm(),
       "/ventas_form": (context) => VentasForm(),
-      "/produccion_form": (context) => const ProduccionForm(),
+      "/produccion_form": (context) => ProduccionForm(),
       "/cuenta": (context) => const CuentaPage(),
       "/clientes_form": (context) => ClientesForm(),
       "/proveedores_form": (context) => ProveedoresForm(),

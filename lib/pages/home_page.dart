@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       body: IndexedStack(index: currentPage, children: [
         VentasPage(),
         ComprasPage(),
-        const ProduccionPage(),
+        ProduccionPage(),
         ClientesPage(),
         ProveedoresPage(),
         const CuentaPage()
