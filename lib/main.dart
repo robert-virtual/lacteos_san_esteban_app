@@ -27,7 +27,7 @@ Future<void> main() async {
     routes: {
       "/login": (context) => const LoginPage(),
       "/home": (context) => const HomePage(),
-      "/compras_form": (context) => const ComprasForm(),
+      "/compras_form": (context) =>  ComprasForm(),
       "/ventas_form": (context) => VentasForm(),
       "/produccion_form": (context) => const ProduccionForm(),
       "/cuenta": (context) => const CuentaPage(),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/compra.dart';
+import 'dart:developer';
 
 class ComprasPage extends StatelessWidget {
   ComprasPage({super.key});
@@ -11,6 +12,8 @@ class ComprasPage extends StatelessWidget {
       .withConverter<Compra>(
           fromFirestore: (snap, _) => Compra.fromJson(snap.data()!),
           toFirestore: (compra, _) => compra.toJson())
+
+
       .snapshots();
 
   @override
@@ -42,6 +45,7 @@ class ComprasPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Text("Proveedor: ${e.data().proveedor.id}"),
+
                           const SizedBox(
                             height: 10.0,
                           ),
