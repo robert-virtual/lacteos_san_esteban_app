@@ -14,7 +14,8 @@ class _CuentaPageState extends State<CuentaPage> {
   final nombre = TextEditingController(
       text: FirebaseAuth.instance.currentUser!.displayName);
   final direccion = TextEditingController();
-  final telefono = TextEditingController();
+  final telefono = TextEditingController(
+      text: FirebaseAuth.instance.currentUser!.phoneNumber);
   final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {

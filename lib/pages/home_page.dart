@@ -1,36 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:lacteos_san_esteban_app/pages/clientes/clientes.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_page.dart';
 import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_page.dart';
 import 'package:lacteos_san_esteban_app/pages/proveedores/proveedores.dart';
 import 'package:lacteos_san_esteban_app/pages/ventas/ventas_page.dart';
+import 'package:get/get.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
+class HomePageArgs {
+  DocumentReference<Persona>? cliente;
+  DocumentReference<Persona>? proveedor;
+  HomePageArgs({this.proveedor, this.cliente});
 }
 
-class _HomePageState extends State<HomePage> {
-  int currentPage = 0;
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  static const routeName = "/home";
+  var currentPage = 0.obs;
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as HomePageArgs?;
+    if (args != null && args.proveedor != null) {
+      currentPage.value = 1;
+    }
     return Scaffold(
-      body: IndexedStack(index: currentPage, children: [
-        VentasPage(),
-        ComprasPage(),
-        ProduccionPage(),
-        ClientesPage(),
-        ProveedoresPage(),
-        const CuentaPage()
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentPage,
+      body: Obx(
+        () => IndexedStack(index: currentPage.value, children: [
+          VentasPage(cliente: args?.cliente),
+          ComprasPage(),
+          ProduccionPage(),
+          ClientesPage(),
+          ProveedoresPage(),
+          const CuentaPage()
+        ]),
+      ),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          currentIndex: currentPage.value,
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Theme.of(context).disabledColor,
-          onTap: (idx) => setState(() => currentPage = idx),
+          onTap: (idx) => currentPage.value = idx,
           items: const [
             BottomNavigationBarItem(
               label: "Ventas",
@@ -56,7 +67,9 @@ class _HomePageState extends State<HomePage> {
               label: "Cuenta",
               icon: Icon(Icons.person),
             ),
-          ]),
+          ],
+        ),
+      ),
     );
   }
 }

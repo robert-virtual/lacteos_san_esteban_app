@@ -4,18 +4,20 @@ import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/compra.dart';
 
 class ComprasPage extends StatelessWidget {
-  ComprasPage({super.key});
+  ComprasPage({super.key, this.proveedor});
+  String? proveedor;
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
-  final comprasStream = FirebaseFirestore.instance
-      .collection("compras")
-      .withConverter<Compra>(
-        fromFirestore: (snap, _) => Compra.fromJson(snap.data()!),
-        toFirestore: (compra, _) => compra.toJson(),
-      )
-      .snapshots();
 
   @override
   Widget build(BuildContext context) {
+    final comprasStream = FirebaseFirestore.instance
+        .collection("compras")
+        .where("proveedor", isEqualTo: proveedor)
+        .withConverter<Compra>(
+          fromFirestore: (snap, _) => Compra.fromJson(snap.data()!),
+          toFirestore: (compra, _) => compra.toJson(),
+        )
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Compras"),

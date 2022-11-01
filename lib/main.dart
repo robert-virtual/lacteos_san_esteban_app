@@ -27,7 +27,7 @@ Future<void> main() async {
         FirebaseAuth.instance.currentUser != null ? "/home" : "/login",
     routes: {
       "/login": (context) => const LoginPage(),
-      "/home": (context) => const HomePage(),
+      "/home": (context) => HomePage(),
       "/compras_form": (context) => ComprasForm(),
       "/ventas_form": (context) => VentasForm(),
       "/produccion_form": (context) => ProduccionForm(),

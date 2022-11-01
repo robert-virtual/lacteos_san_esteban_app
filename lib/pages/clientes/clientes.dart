@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
+import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 
 class ClientesPage extends StatelessWidget {
   ClientesPage({super.key});
@@ -60,7 +61,12 @@ class ClientesPage extends StatelessWidget {
                             height: 10,
                           ),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).popAndPushNamed(
+                                  "/home",
+                                  arguments: HomePageArgs(cliente: e.reference),
+                                );
+                              },
                               child: Text("Ver ventas a ${e.data().nombre}"))
                         ],
                       ),
