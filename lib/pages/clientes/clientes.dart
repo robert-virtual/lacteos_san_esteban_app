@@ -3,10 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:lacteos_san_esteban_app/pages/home_page.dart';
+import 'package:get/get.dart';
 
 class ClientesPage extends StatelessWidget {
   ClientesPage({super.key});
-
+  var searching = false.obs;
+  final searchFocus = FocusNode();
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final clientesStream = FirebaseFirestore.instance
       .collection("clientes")
@@ -18,7 +20,35 @@ class ClientesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Clientes"),
+        leading: Obx(
+          () => Visibility(
+            visible: searching.value,
+            child: IconButton(
+              onPressed: () => searching.value = false,
+              icon: const Icon(Icons.arrow_back),
+            ),
+          ),
+        ),
+        title: Obx(() {
+          return searching.value
+              ? TextField(
+                  focusNode: searchFocus,
+                  decoration: const InputDecoration(hintText: "Buscar..."),
+                  onSubmitted: (value) {
+                    searching.value = false;
+                  },
+                )
+              : const Text("Clientes");
+        }),
+        actions: [
+          IconButton(
+            onPressed: () {
+              searching.value = true;
+              searchFocus.requestFocus();
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
       ),
       body: StreamBuilder(
           stream: clientesStream,

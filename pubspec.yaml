@@ -41,7 +41,7 @@ dependencies:
   cloud_firestore: ^4.0.2
   intl: ^0.17.0
   get: ^4.6.5
-  firebase_analytics: ^10.0.2
+  pdf: ^3.8.4
 
 dev_dependencies:
   flutter_test:

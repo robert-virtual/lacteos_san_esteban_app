@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/compra.dart';
+import 'package:get/get.dart';
 
 class ComprasPage extends StatelessWidget {
   ComprasPage({super.key, this.proveedor});
   String? proveedor;
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
+  final filters = ["Proveedor", "Empleado", "Fecha"];
+  var appliedFilters = <String>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +23,128 @@ class ComprasPage extends StatelessWidget {
         .snapshots();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Compras"),
-      ),
+          title: const Text("Compras"),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Wrap(
+                    spacing: 4.0,
+                    children: filters
+                        .map(
+                          (e) => Obx(
+                            () => ChoiceChip(
+                              label: Row(
+                                children: [
+                                  Text(e),
+                                  Icon(
+                                    appliedFilters.contains(e)
+                                        ? Icons.close
+                                        : Icons.expand_more,
+                                  ),
+                                ],
+                              ),
+                              selected: appliedFilters.contains(e),
+                              onSelected: (value) {
+                                print(value);
+                                if (value) {
+                                  appliedFilters.add(e);
+                                  switch (e) {
+                                    case "Proveedor":
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text("Cliente"),
+                                                  TextButton(
+                                                    onPressed: () {},
+                                                    child:
+                                                        const Text("Aplicar"),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                      break;
+                                    case "Empleado":
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text("Empleado"),
+                                                  TextButton(
+                                                    onPressed: () {},
+                                                    child:
+                                                        const Text("Aplicar"),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                      break;
+                                    case "Fecha":
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text("Fecha"),
+                                                  TextButton(
+                                                    onPressed: () {},
+                                                    child:
+                                                        const Text("Aplicar"),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                      break;
+                                    default:
+                                  }
+                                  print(appliedFilters);
+                                  return;
+                                }
+                                appliedFilters.remove(e);
+                                print(appliedFilters);
+                                /* Navigator.of(context).popAndPushNamed("/home"); */
+                              },
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  )
+                ],
+              ),
+            ),
+          )),
       body: StreamBuilder(
         stream: comprasStream,
         builder: (context, snap) {
