@@ -4,18 +4,18 @@ import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:get/get.dart';
 
-class ProveedoresPage extends StatelessWidget {
-  ProveedoresPage({super.key});
+class EmpleadosPage extends StatelessWidget {
+  EmpleadosPage({super.key});
 
   var searching = false.obs;
   final searchFocus = FocusNode();
-  var proveedor = "".obs;
+  var empleado = "".obs;
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
-  final proveedoresCollection = FirebaseFirestore.instance
-      .collection("proveedores")
+  final empleadosCollection = FirebaseFirestore.instance
+      .collection("empleados")
       .withConverter<Persona>(
           fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
-          toFirestore: (proveedor, _) => proveedor.toJson());
+          toFirestore: (empleado, _) => empleado.toJson());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,12 +37,12 @@ class ProveedoresPage extends StatelessWidget {
                     decoration: const InputDecoration(hintText: "Buscar..."),
                     onSubmitted: (value) {
                       if (value.isNotEmpty) {
-                        proveedor.value = value;
+                        empleado.value = value;
                       }
                       searching.value = false;
                     },
                   )
-                : const Text("Proveedores");
+                : const Text("Empleados");
           },
         ),
         actions: [
@@ -55,16 +55,19 @@ class ProveedoresPage extends StatelessWidget {
           )
         ],
       ),
-      body: Obx(() => StreamBuilder(stream: () {
-            if (proveedor.value.isNotEmpty) {
-              return proveedoresCollection
-                  .where("nombre", isGreaterThanOrEqualTo: proveedor.value)
+      body: Obx(
+        () => StreamBuilder(
+          stream: () {
+            if (empleado.value.isNotEmpty) {
+              return empleadosCollection
+                  .where("nombre", isGreaterThanOrEqualTo: empleado.value)
                   .where("nombre",
-                      isLessThanOrEqualTo: "${proveedor.value}\uf8ff")
+                      isLessThanOrEqualTo: "${empleado.value}\uf8ff")
                   .snapshots();
             }
-            return proveedoresCollection.snapshots();
-          }(), builder: (context, snap) {
+            return empleadosCollection.snapshots();
+          }(),
+          builder: (context, snap) {
             if (snap.hasError) {
               return const Center(
                 child: Text("Ups ha ocurrido un error"),
@@ -81,10 +84,10 @@ class ProveedoresPage extends StatelessWidget {
                   delegate: SliverChildListDelegate(
                     [
                       Visibility(
-                        visible: proveedor.value.isNotEmpty,
+                        visible: empleado.value.isNotEmpty,
                         child: TextButton(
                           onPressed: () {
-                            proveedor.value = "";
+                            empleado.value = "";
                           },
                           child: const Text("Ver todos"),
                         ),
@@ -123,12 +126,29 @@ class ProveedoresPage extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Compras de ${e.data().nombre.capitalize}",
+                                Row(children: [
+                                  ChoiceChip(
+                                    selected: false,
+                                    onSelected: (value) {},
+                                    label: const Text(
+                                      "Ventas",
+                                    ),
                                   ),
-                                )
+                                  ChoiceChip(
+                                    selected: false,
+                                    onSelected: (value) {},
+                                    label: const Text(
+                                      "Compras",
+                                    ),
+                                  ),
+                                  ChoiceChip(
+                                    selected: false,
+                                    onSelected: (value) {},
+                                    label: const Text(
+                                      "Produccion",
+                                    ),
+                                  )
+                                ]),
                               ],
                             ),
                           ),
@@ -139,10 +159,12 @@ class ProveedoresPage extends StatelessWidget {
                 )
               ],
             );
-          })),
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed("/proveedores_form");
+          Navigator.of(context).pushNamed("/empleados_form");
         },
         child: const Icon(Icons.add),
       ),

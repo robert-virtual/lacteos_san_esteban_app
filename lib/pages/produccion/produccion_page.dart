@@ -8,8 +8,7 @@ class ProduccionPage extends StatelessWidget {
   ProduccionPage({super.key});
 
   final filters = [
-    "Empleado",
-    "Producto",
+    "Fecha",
   ];
   var appliedFilters = <String>[].obs;
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");

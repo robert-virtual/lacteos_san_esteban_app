@@ -4,6 +4,7 @@ import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:lacteos_san_esteban_app/pages/clientes/clientes.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_page.dart';
 import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
+import 'package:lacteos_san_esteban_app/pages/empleados/empleados.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_page.dart';
 import 'package:lacteos_san_esteban_app/pages/proveedores/proveedores.dart';
 import 'package:lacteos_san_esteban_app/pages/ventas/ventas_page.dart';
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
           ProduccionPage(),
           ClientesPage(),
           ProveedoresPage(),
-          const CuentaPage()
+          EmpleadosPage()
         ]),
       ),
       bottomNavigationBar: Obx(

@@ -131,7 +131,7 @@ class ClientesPage extends StatelessWidget {
                                     );
                                   },
                                   child: Text(
-                                      "Ver ventas a ${e.data().nombre.capitalize}"),
+                                      "Ventas a ${e.data().nombre.capitalize}"),
                                 )
                               ],
                             ),

@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:lacteos_san_esteban_app/pages/clientes/clientes_form.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_form.dart';
 import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
+import 'package:lacteos_san_esteban_app/pages/empleados/empleados_form.dart';
 import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 import 'package:lacteos_san_esteban_app/pages/login_page.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_form.dart';
@@ -34,6 +35,7 @@ Future<void> main() async {
       "/cuenta": (context) => const CuentaPage(),
       "/clientes_form": (context) => ClientesForm(),
       "/proveedores_form": (context) => ProveedoresForm(),
+      "/empleados_form": (context) => EmpleadosForm(),
     },
   ));
 }
