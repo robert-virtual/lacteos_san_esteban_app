@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.local_shipping),
             ),
             BottomNavigationBarItem(
-              label: "Cuenta",
+              label: "Empleados",
               icon: Icon(Icons.person),
             ),
           ],

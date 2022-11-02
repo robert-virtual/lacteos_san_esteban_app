@@ -48,6 +48,12 @@ class EmpleadosPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
+              Navigator.of(context).pushNamed("/cuenta");
+            },
+            icon: const Icon(Icons.account_box),
+          ),
+          IconButton(
+            onPressed: () {
               searching.value = true;
               searchFocus.requestFocus();
             },
@@ -127,26 +133,31 @@ class EmpleadosPage extends StatelessWidget {
                                   height: 10,
                                 ),
                                 Row(children: [
-                                  ChoiceChip(
-                                    selected: false,
-                                    onSelected: (value) {},
-                                    label: const Text(
-                                      "Ventas",
-                                    ),
-                                  ),
-                                  ChoiceChip(
-                                    selected: false,
-                                    onSelected: (value) {},
-                                    label: const Text(
-                                      "Compras",
-                                    ),
-                                  ),
-                                  ChoiceChip(
-                                    selected: false,
-                                    onSelected: (value) {},
-                                    label: const Text(
-                                      "Produccion",
-                                    ),
+                                  Wrap(
+                                    spacing: 4.0,
+                                    children: [
+                                      ChoiceChip(
+                                        selected: false,
+                                        onSelected: (value) {},
+                                        label: const Text(
+                                          "Ventas",
+                                        ),
+                                      ),
+                                      ChoiceChip(
+                                        selected: false,
+                                        onSelected: (value) {},
+                                        label: const Text(
+                                          "Compras",
+                                        ),
+                                      ),
+                                      ChoiceChip(
+                                        selected: false,
+                                        onSelected: (value) {},
+                                        label: const Text(
+                                          "Produccion",
+                                        ),
+                                      )
+                                    ],
                                   )
                                 ]),
                               ],
