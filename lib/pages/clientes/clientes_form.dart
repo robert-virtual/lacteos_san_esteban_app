@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
+import 'package:get/get.dart';
 
 class ClientesForm extends StatelessWidget {
   ClientesForm({super.key});
@@ -19,7 +20,9 @@ class ClientesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Nuevo Cliente")),
+      appBar: AppBar(
+        title: const Text("Nuevo Cliente"),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(
           top: 25,
@@ -66,10 +69,10 @@ class ClientesForm extends StatelessWidget {
           res
               .set(
             Persona(
-              correo: correo.text,
-              nombre: nombre.text,
-              telefono: telefono.text,
-              direccion: direccion.text,
+              correo: correo.text.trim(),
+              nombre: nombre.text.trim().toLowerCase(),
+              telefono: telefono.text.trim(),
+              direccion: direccion.text.trim().toLowerCase(),
               fechaRegistro: Timestamp.now(),
             ),
           )
