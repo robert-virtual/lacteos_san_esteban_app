@@ -39,7 +39,7 @@ class VentasPage extends StatelessWidget {
               .where("empleado", isEqualTo: rxEmpleado.value)
               .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
               .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
-              /* .orderBy("fecha", descending: true) */
+              .orderBy("fecha", descending: true)
               .withConverter<Venta>(
                   fromFirestore: (snap, _) => Venta.fromJson(snap.data()!),
                   toFirestore: (venta, _) => venta.toJson())
