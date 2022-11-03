@@ -167,10 +167,9 @@ class VentasPage extends StatelessWidget {
                                       lastDate: DateTime.now(),
                                     );
                                     if (fechaFinal != null) {
-                                      rxFechaFinal.value =
-                                          Timestamp.fromDate(fechaFinal.add(
-                                        const Duration(days: 1),
-                                      ));
+                                      rxFechaFinal.value = Timestamp.fromDate(
+                                        fechaFinal,
+                                      );
                                     }
                                   },
                                 )
