@@ -16,8 +16,10 @@ class VentasPage extends StatelessWidget {
   DocumentReference<Persona>? empleado;
   var rxEmpleado = Rx<DocumentReference<Persona>?>(null);
   var rxCliente = Rx<DocumentReference<Persona>?>(null);
-  var rxFecha = Rx<Timestamp?>(null);
-  final formatDate = DateFormat("yyyy/MM/dd h:mm a");
+  var rxFechaInicial = Rx<Timestamp?>(null);
+  var rxFechaFinal = Rx<Timestamp?>(null);
+  final formatDateTime = DateFormat("dd MMM yyyy h:mm a");
+  final formatDate = DateFormat("dd/MM/yyyy");
   final ventasCollection = FirebaseFirestore.instance.collection("ventas");
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,9 @@ class VentasPage extends StatelessWidget {
           stream: ventasCollection
               .where("cliente", isEqualTo: rxCliente.value)
               .where("empleado", isEqualTo: rxEmpleado.value)
-              .where("fecha", isEqualTo: rxFecha.value)
+              .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
+              .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
+              .orderBy("fecha", descending: true)
               .withConverter<Venta>(
                   fromFirestore: (snap, _) => Venta.fromJson(snap.data()!),
                   toFirestore: (venta, _) => venta.toJson())
@@ -56,6 +60,7 @@ class VentasPage extends StatelessWidget {
                 SliverAppBar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   elevation: 0,
+                  title: Text("${snap.data!.docs.length} Resultados"),
                   actions: [
                     ChoiceChip(
                       label: Row(
@@ -64,32 +69,111 @@ class VentasPage extends StatelessWidget {
                         children: [
                           const Text("Fecha"),
                           Icon(
-                            rxFecha.value != null
+                            rxFechaInicial.value != null
                                 ? Icons.close
                                 : Icons.expand_more,
                           )
                         ],
                       ),
-                      selected: false,
+                      selected: rxFechaFinal.value != null ||
+                          rxFechaInicial.value != null,
                       onSelected: (value) {
+                        print(value);
+                        if (!value) {
+                          rxFechaFinal.value = null;
+                          rxFechaInicial.value = null;
+                          return;
+                        }
                         showModalBottomSheet(
                           context: context,
                           builder: (context) => Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text("Fecha"),
+                                    const Text(
+                                      "Fecha",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
                                     TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
                                       child: const Text("Aplicar"),
                                     )
                                   ],
                                 ),
-                                /* TextButton(child: Text("Selecc")) */
+                                Text("Fecha inicial",
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor)),
+                                OutlinedButton(
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Obx(() => Text(rxFechaInicial.value !=
+                                                null
+                                            ? formatDate.format(
+                                                rxFechaInicial.value!.toDate())
+                                            : "Seleccionar fecha")),
+                                        const Icon(Icons.date_range)
+                                      ]),
+                                  onPressed: () async {
+                                    final fechaInical = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2021),
+                                      lastDate: DateTime.now(),
+                                    );
+                                    if (fechaInical != null) {
+                                      rxFechaInicial.value = Timestamp.fromDate(
+                                        fechaInical.add(
+                                          const Duration(days: 1),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Text("Fecha final",
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor)),
+                                OutlinedButton(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Obx(() => Text(rxFechaFinal.value != null
+                                          ? formatDate.format(
+                                              rxFechaFinal.value!.toDate())
+                                          : "Seleccionar fecha")),
+                                      const Icon(Icons.date_range)
+                                    ],
+                                  ),
+                                  onPressed: () async {
+                                    final fechaFinal = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2021),
+                                      lastDate: DateTime.now(),
+                                    );
+                                    if (fechaFinal != null) {
+                                      rxFechaFinal.value =
+                                          Timestamp.fromDate(fechaFinal.add(
+                                        const Duration(days: 1),
+                                      ));
+                                    }
+                                  },
+                                )
                               ],
                             ),
                           ),
@@ -144,7 +228,13 @@ class VentasPage extends StatelessWidget {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          Text(formatDate.format(e.data().fecha.toDate())),
+                          Chip(
+                            label: Text(
+                              formatDateTime.format(
+                                e.data().fecha.toDate(),
+                              ),
+                            ),
+                          ),
                         ]);
                         return Card(
                           child: Padding(
