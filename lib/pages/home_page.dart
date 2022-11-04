@@ -34,9 +34,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Obx(
         () => IndexedStack(index: currentPage.value, children: [
-          VentasPage(cliente: args?.cliente, empleado: args?.cliente),
-          ComprasPage(proveedor: args?.cliente, empleado: args?.cliente),
-          ProduccionPage(empleado: args?.cliente),
+          VentasPage(cliente: args?.cliente, empleado: args?.empleado),
+          ComprasPage(proveedor: args?.proveedor, empleado: args?.empleado),
+          ProduccionPage(empleado: args?.empleado),
           ClientesPage(),
           ProveedoresPage(),
           EmpleadosPage()

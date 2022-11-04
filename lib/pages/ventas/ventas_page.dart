@@ -31,15 +31,22 @@ class VentasPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Ventas"),
       ),
-      body: Obx(() => StreamBuilder(
-          stream: ventasCollection
-              .where("cliente", isEqualTo: rxCliente.value)
-              /* .where("empleado", isEqualTo: rxEmpleado.value) */
-              .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
-              .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
-              .orderBy("fecha", descending: true)
-              .snapshots(),
-          builder: (context, snap) {
+      body: Obx(() => StreamBuilder(stream: () {
+            var query = ventasCollection
+                .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
+                .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
+                .orderBy("fecha", descending: true);
+            if (rxCliente.value != null) {
+              query = query.where("cliente", isEqualTo: rxCliente.value);
+              print("query cliente");
+            }
+            if (rxEmpleado.value != null) {
+              print("query empleado");
+              query = query.where("empleado", isEqualTo: rxEmpleado.value);
+            }
+
+            return query.snapshots();
+          }(), builder: (context, snap) {
             if (snap.hasError) {
               print("Snap Error: ${snap.error}");
               return const Center(
@@ -61,6 +68,21 @@ class VentasPage extends StatelessWidget {
                     Wrap(
                       spacing: 4.0,
                       children: [
+                        Visibility(
+                          visible: rxEmpleado.value != null,
+                          child: ChoiceChip(
+                            label: Row(children: const [
+                              Text("Empleado"),
+                              Icon(Icons.close)
+                            ]),
+                            selected: rxEmpleado.value != null,
+                            onSelected: (value) {
+                              if (!value) {
+                                rxEmpleado.value = null;
+                              }
+                            },
+                          ),
+                        ),
                         Visibility(
                           visible: rxCliente.value != null,
                           child: ChoiceChip(
