@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
+import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 import 'package:get/get.dart';
 
 class ProveedoresPage extends StatelessWidget {
@@ -124,7 +125,15 @@ class ProveedoresPage extends StatelessWidget {
                                   height: 10,
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).popAndPushNamed(
+                                      "/home",
+                                      arguments: HomePageArgs(
+                                        idx: 1,
+                                        proveedor: e.reference,
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     "Compras de ${e.data().nombre.capitalize}",
                                   ),

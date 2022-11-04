@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:get/get.dart';
+import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 
 class EmpleadosPage extends StatelessWidget {
   EmpleadosPage({super.key});
@@ -132,34 +133,63 @@ class EmpleadosPage extends StatelessWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Row(children: [
-                                  Wrap(
-                                    spacing: 4.0,
-                                    children: [
-                                      ChoiceChip(
-                                        selected: false,
-                                        onSelected: (value) {},
-                                        label: const Text(
-                                          "Ventas",
+                                Row(
+                                  children: [
+                                    Wrap(
+                                      spacing: 4.0,
+                                      children: [
+                                        ChoiceChip(
+                                          selected: false,
+                                          onSelected: (value) {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                              "/home",
+                                              arguments: HomePageArgs(
+                                                idx: 0,
+                                                empleado: e.reference,
+                                              ),
+                                            );
+                                          },
+                                          label: const Text(
+                                            "Ventas",
+                                          ),
                                         ),
-                                      ),
-                                      ChoiceChip(
-                                        selected: false,
-                                        onSelected: (value) {},
-                                        label: const Text(
-                                          "Compras",
+                                        ChoiceChip(
+                                          selected: false,
+                                          onSelected: (value) {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                              "/home",
+                                              arguments: HomePageArgs(
+                                                idx: 1,
+                                                empleado: e.reference,
+                                              ),
+                                            );
+                                          },
+                                          label: const Text(
+                                            "Compras",
+                                          ),
                                         ),
-                                      ),
-                                      ChoiceChip(
-                                        selected: false,
-                                        onSelected: (value) {},
-                                        label: const Text(
-                                          "Produccion",
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ]),
+                                        ChoiceChip(
+                                          selected: false,
+                                          onSelected: (value) {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                              "/home",
+                                              arguments: HomePageArgs(
+                                                idx: 2,
+                                                empleado: e.reference,
+                                              ),
+                                            );
+                                          },
+                                          label: const Text(
+                                            "Produccion",
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
                           ),

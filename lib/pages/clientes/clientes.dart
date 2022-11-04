@@ -126,8 +126,10 @@ class ClientesPage extends StatelessWidget {
                                   onPressed: () {
                                     Navigator.of(context).popAndPushNamed(
                                       "/home",
-                                      arguments:
-                                          HomePageArgs(cliente: e.reference),
+                                      arguments: HomePageArgs(
+                                        idx: 0,
+                                        cliente: e.reference,
+                                      ),
                                     );
                                   },
                                   child: Text(

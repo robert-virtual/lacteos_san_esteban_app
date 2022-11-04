@@ -13,7 +13,8 @@ class HomePageArgs {
   DocumentReference<Persona>? cliente;
   DocumentReference<Persona>? proveedor;
   DocumentReference<Persona>? empleado;
-  HomePageArgs({this.proveedor, this.cliente});
+  int idx = 0;
+  HomePageArgs({required idx, this.proveedor, this.cliente, this.empleado});
 }
 
 class HomePage extends StatelessWidget {
@@ -24,12 +25,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as HomePageArgs?;
     if (args != null) {
-      if (args.proveedor != null) {
-        currentPage.value = 1;
-      }
-      if (args.empleado != null) {
-        currentPage.value = 2;
-      }
+      currentPage.value = args.idx;
     }
     return Scaffold(
       body: Obx(
