@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:lacteos_san_esteban_app/pages/clientes/clientes.dart';
 import 'package:lacteos_san_esteban_app/pages/compras/compras_page.dart';
-import 'package:lacteos_san_esteban_app/pages/cuenta/cuenta_page.dart';
 import 'package:lacteos_san_esteban_app/pages/empleados/empleados.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_page.dart';
 import 'package:lacteos_san_esteban_app/pages/proveedores/proveedores.dart';
@@ -13,6 +12,7 @@ import 'package:get/get.dart';
 class HomePageArgs {
   DocumentReference<Persona>? cliente;
   DocumentReference<Persona>? proveedor;
+  DocumentReference<Persona>? empleado;
   HomePageArgs({this.proveedor, this.cliente});
 }
 
@@ -23,15 +23,20 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as HomePageArgs?;
-    if (args != null && args.proveedor != null) {
-      currentPage.value = 1;
+    if (args != null) {
+      if (args.proveedor != null) {
+        currentPage.value = 1;
+      }
+      if (args.empleado != null) {
+        currentPage.value = 2;
+      }
     }
     return Scaffold(
       body: Obx(
         () => IndexedStack(index: currentPage.value, children: [
-          VentasPage(cliente: args?.cliente),
-          ComprasPage(),
-          ProduccionPage(),
+          VentasPage(cliente: args?.cliente, empleado: args?.cliente),
+          ComprasPage(proveedor: args?.cliente, empleado: args?.cliente),
+          ProduccionPage(empleado: args?.cliente),
           ClientesPage(),
           ProveedoresPage(),
           EmpleadosPage()

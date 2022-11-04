@@ -198,9 +198,9 @@ class ComprasForm extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text("Guardar Venta"),
+                      title: const Text("Guardar Compra"),
                       content: const Text(
-                          "Debes seleccionar un proveedor y agregar productos a la venta "),
+                          "Debes seleccionar un proveedor y agregar productos a la Compra"),
                       actions: [
                         TextButton(
                           child: const Text("Ok"),
@@ -226,7 +226,7 @@ class ComprasForm extends StatelessWidget {
               )
                   .then((value) {
                 const snackbar =
-                    SnackBar(content: Text("Venta guardada con exito"));
+                    SnackBar(content: Text("Compra guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
                 Navigator.of(context).pop();
@@ -237,9 +237,9 @@ class ComprasForm extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text("Guardar Venta"),
+                        title: const Text("Guardar Compra"),
                         content:
-                            const Text("Hubo un error al guardar la venta"),
+                            const Text("Hubo un error al guardar la Compra"),
                         actions: [
                           TextButton(
                             child: const Text("Ok"),

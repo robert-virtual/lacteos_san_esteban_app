@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/compra.dart';
 import 'package:get/get.dart';
+import 'package:lacteos_san_esteban_app/models/venta.dart';
 
 class ComprasPage extends StatelessWidget {
-  ComprasPage({super.key, this.proveedor});
-  String? proveedor;
+  ComprasPage({super.key, this.proveedor, this.empleado});
+  DocumentReference<Persona>? proveedor;
+  DocumentReference<Persona>? empleado;
+  var rxEmpleado = Rx<DocumentReference<Persona>?>(null);
+  var rxProveedor = Rx<DocumentReference<Persona>?>(null);
   var rxFechaInicial = Rx<Timestamp?>(null);
   var rxFechaFinal = Rx<Timestamp?>(null);
   final formatDateTime = DateFormat("dd MMM yyyy h:mm a");
@@ -19,6 +23,12 @@ class ComprasPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (empleado != null) {
+      rxEmpleado.value = empleado;
+    }
+    if (proveedor != null) {
+      rxProveedor.value = proveedor;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Compras"),

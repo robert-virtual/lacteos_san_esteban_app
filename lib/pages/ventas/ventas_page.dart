@@ -4,12 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:get/get.dart';
 
-class Filtro {
-  String name;
-  dynamic value;
-  Filtro({this.value, required this.name});
-}
-
 class VentasPage extends StatelessWidget {
   VentasPage({super.key, this.cliente, this.empleado});
   DocumentReference<Persona>? cliente;
@@ -20,7 +14,11 @@ class VentasPage extends StatelessWidget {
   var rxFechaFinal = Rx<Timestamp?>(null);
   final formatDateTime = DateFormat("dd MMM yyyy h:mm a");
   final formatDate = DateFormat("dd/MM/yyyy");
-  final ventasCollection = FirebaseFirestore.instance.collection("ventas");
+  final ventasCollection = FirebaseFirestore.instance
+      .collection("ventas")
+      .withConverter<Venta>(
+          fromFirestore: (snap, _) => Venta.fromJson(snap.data()!),
+          toFirestore: (venta, _) => venta.toJson());
   @override
   Widget build(BuildContext context) {
     if (empleado != null) {
@@ -36,13 +34,10 @@ class VentasPage extends StatelessWidget {
       body: Obx(() => StreamBuilder(
           stream: ventasCollection
               .where("cliente", isEqualTo: rxCliente.value)
-              .where("empleado", isEqualTo: rxEmpleado.value)
+              /* .where("empleado", isEqualTo: rxEmpleado.value) */
               .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
               .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
               .orderBy("fecha", descending: true)
-              .withConverter<Venta>(
-                  fromFirestore: (snap, _) => Venta.fromJson(snap.data()!),
-                  toFirestore: (venta, _) => venta.toJson())
               .snapshots(),
           builder: (context, snap) {
             if (snap.hasError) {

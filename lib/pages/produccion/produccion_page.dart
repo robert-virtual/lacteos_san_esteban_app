@@ -3,163 +3,198 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/produccion.dart';
 import 'package:get/get.dart';
+import 'package:lacteos_san_esteban_app/models/venta.dart';
 
 class ProduccionPage extends StatelessWidget {
-  ProduccionPage({super.key});
-
-  final filters = [
-    "Fecha",
-  ];
-  var appliedFilters = <String>[].obs;
-  final formatDate = DateFormat("yyyy/MM/dd h:mm a");
-  final produccionStream = FirebaseFirestore.instance
+  ProduccionPage({super.key, this.empleado});
+  DocumentReference<Persona>? empleado;
+  var rxEmpleado = Rx<DocumentReference<Persona>?>(null);
+  var rxFechaInicial = Rx<Timestamp?>(null);
+  var rxFechaFinal = Rx<Timestamp?>(null);
+  final formatDateTime = DateFormat("dd MMM yyyy h:mm a");
+  final produccionCollection = FirebaseFirestore.instance
       .collection("produccion")
       .withConverter<Produccion>(
           fromFirestore: (snap, _) => Produccion.fromJson(snap.data()!),
-          toFirestore: (produccion, _) => produccion.toJson())
-      .snapshots();
+          toFirestore: (produccion, _) => produccion.toJson());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text("Produccion"),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(50),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
+        title: const Text("Produccion"),
+      ),
+      body: Obx(
+        () => StreamBuilder(stream: () {
+          return produccionCollection
+              .where("empleado", isEqualTo: rxEmpleado.value)
+              .where("fecha", isLessThanOrEqualTo: rxFechaInicial.value)
+              .where("fecha", isGreaterThanOrEqualTo: rxFechaFinal.value)
+              .orderBy("fecha", descending: true)
+              .snapshots();
+        }(), builder: (context, snap) {
+          if (snap.hasError) {
+            return const Center(
+              child: Text("Ups ha ocurrido un error"),
+            );
+          }
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                title: Text("${snap.data!.docs.length} Resultados"),
+                actions: [
                   Wrap(
                     spacing: 4.0,
-                    children: filters
-                        .map(
-                          (e) => Obx(
-                            () => ChoiceChip(
-                              label: Row(
+                    children: [
+                      Visibility(
+                        visible: rxEmpleado.value != null,
+                        child: ChoiceChip(
+                          label: Row(children: const [
+                            Text("Empleado"),
+                            Icon(Icons.close)
+                          ]),
+                          selected: rxEmpleado.value != null,
+                          onSelected: (value) {
+                            if (!value) {
+                              rxEmpleado.value = null;
+                            }
+                          },
+                        ),
+                      ),
+                      ChoiceChip(
+                        label: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text("Fecha"),
+                            Icon(
+                              rxFechaInicial.value != null
+                                  ? Icons.close
+                                  : Icons.expand_more,
+                            )
+                          ],
+                        ),
+                        selected: rxFechaFinal.value != null ||
+                            rxFechaInicial.value != null,
+                        onSelected: (value) {
+                          if (!value) {
+                            rxFechaFinal.value = null;
+                            rxFechaInicial.value = null;
+                            return;
+                          }
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(e),
-                                  Icon(
-                                    appliedFilters.contains(e)
-                                        ? Icons.close
-                                        : Icons.expand_more,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Fecha",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("Aplicar"),
+                                      )
+                                    ],
                                   ),
+                                  Text("Fecha inicial",
+                                      style: TextStyle(
+                                          color: Theme.of(context).hintColor)),
+                                  OutlinedButton(
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Obx(
+                                            () => Text(
+                                                rxFechaInicial.value != null
+                                                    ? formatDateTime.format(
+                                                        rxFechaInicial.value!
+                                                            .toDate())
+                                                    : "Seleccionar fecha"),
+                                          ),
+                                          const Icon(Icons.date_range)
+                                        ]),
+                                    onPressed: () async {
+                                      final fechaInical = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2021),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (fechaInical != null) {
+                                        rxFechaInicial.value =
+                                            Timestamp.fromDate(
+                                          fechaInical.add(
+                                            const Duration(days: 1),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text("Fecha final",
+                                      style: TextStyle(
+                                          color: Theme.of(context).hintColor)),
+                                  OutlinedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Obx(() => Text(rxFechaFinal.value !=
+                                                null
+                                            ? formatDateTime.format(
+                                                rxFechaFinal.value!.toDate())
+                                            : "Seleccionar fecha")),
+                                        const Icon(Icons.date_range)
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      final fechaFinal = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2021),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (fechaFinal != null) {
+                                        rxFechaFinal.value = Timestamp.fromDate(
+                                          fechaFinal,
+                                        );
+                                      }
+                                    },
+                                  )
                                 ],
                               ),
-                              selected: appliedFilters.contains(e),
-                              onSelected: (value) {
-                                print(value);
-                                if (value) {
-                                  appliedFilters.add(e);
-                                  switch (e) {
-                                    case "Proveedor":
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) => Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  const Text("Cliente"),
-                                                  TextButton(
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text("Aplicar"),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                      break;
-                                    case "Empleado":
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) => Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  const Text("Empleado"),
-                                                  TextButton(
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text("Aplicar"),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                      break;
-                                    case "Fecha":
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) => Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  const Text("Fecha"),
-                                                  TextButton(
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text("Aplicar"),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                      break;
-                                    default:
-                                  }
-                                  print(appliedFilters);
-                                  return;
-                                }
-                                appliedFilters.remove(e);
-                                print(appliedFilters);
-                                /* Navigator.of(context).popAndPushNamed("/home"); */
-                              },
                             ),
-                          ),
-                        )
-                        .toList(),
+                          );
+                        },
+                      )
+                    ],
                   )
                 ],
+                pinned: true,
               ),
-            ),
-          )),
-      body: StreamBuilder(
-          stream: produccionStream,
-          builder: (context, snap) {
-            if (snap.hasError) {
-              return const Center(
-                child: Text("Ups ha ocurrido un error"),
-              );
-            }
-            if (snap.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return ListView(
-              padding: const EdgeInsets.all(10.0),
-              children: snap.data!.docs.map(
+              SliverList(
+                  delegate: SliverChildListDelegate(snap.data!.docs.map(
                 (e) {
                   const boldtext = TextStyle(fontWeight: FontWeight.bold);
                   final items = <Widget>[
@@ -185,18 +220,26 @@ class ProduccionPage extends StatelessWidget {
                       },
                     ),
                   );
-                  items.addAll([
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(
-                      "Empleado: ${e.data().empleado.id}",
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(formatDate.format(e.data().fecha.toDate())),
-                  ]);
+                  items.addAll(
+                    [
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "Empleado: ${e.data().empleado.id}",
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Chip(
+                        label: Text(
+                          formatDateTime.format(
+                            e.data().fecha.toDate(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
                   return Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -207,9 +250,11 @@ class ProduccionPage extends StatelessWidget {
                     ),
                   );
                 },
-              ).toList(),
-            );
-          }),
+              ).toList()))
+            ],
+          );
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed("/produccion_form");
