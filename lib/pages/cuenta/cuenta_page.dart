@@ -17,6 +17,19 @@ class _CuentaPageState extends State<CuentaPage> {
   final telefono = TextEditingController(
       text: FirebaseAuth.instance.currentUser!.phoneNumber);
   final user = FirebaseAuth.instance.currentUser!;
+  final futureEmpleado = FirebaseFirestore.instance
+      .collection("empleados")
+      .withConverter<Persona>(
+        fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+        toFirestore: (empleado, _) => empleado.toJson(),
+      )
+      .doc(FirebaseAuth.instance.currentUser!.email)
+      .withConverter<Persona>(
+        fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+        toFirestore: (empleado, _) => empleado.toJson(),
+      )
+      .get();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,125 +49,151 @@ class _CuentaPageState extends State<CuentaPage> {
           )
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Informacion de empleado",
-              style: TextStyle(fontSize: 20),
-            ),
-            TextField(
-              controller: nombre,
-              decoration: const InputDecoration(
-                label: Text("Nombre"),
-                icon: Icon(Icons.person),
-              ),
-            ),
-            TextField(
-              controller: telefono,
-              keyboardType: TextInputType.number,
-              maxLength: 8,
-              decoration: const InputDecoration(
-                label: Text("Telefono"),
-                icon: Icon(Icons.phone),
-              ),
-            ),
-            TextField(
-              controller: direccion,
-              decoration: const InputDecoration(
-                label: Text("Direccion"),
-                icon: Icon(
-                  Icons.location_on,
+      body: FutureBuilder(
+        future: futureEmpleado,
+        builder: (context, snap) {
+          if (snap.hasError) {
+            return const Center(
+              child: Text("Ups ha ocurrido un error"),
+            );
+          }
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final empleado = snap.data!;
+          if (empleado.exists) {
+            telefono.text = empleado.data()!.telefono;
+            direccion.text = empleado.data()!.direccion;
+          }
+          return Center(
+            child: ListView(
+              padding: const EdgeInsets.all(10),
+              children: [
+                TextField(
+                  controller: nombre,
+                  decoration: const InputDecoration(
+                    label: Text("Nombre"),
+                    icon: Icon(Icons.person),
+                  ),
                 ),
-              ),
-            ),
-            TextField(
-              enabled: false,
-              controller: TextEditingController(text: user.email),
-              decoration: const InputDecoration(
-                label: Text("Correo"),
-                icon: Icon(
-                  Icons.location_on,
+                TextField(
+                  controller: telefono,
+                  keyboardType: TextInputType.number,
+                  maxLength: 8,
+                  decoration: const InputDecoration(
+                    label: Text("Telefono"),
+                    icon: Icon(Icons.phone),
+                  ),
                 ),
-              ),
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.all(10.0),
+                TextField(
+                  controller: direccion,
+                  decoration: const InputDecoration(
+                    label: Text("Direccion"),
+                    icon: Icon(
+                      Icons.location_on,
+                    ),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                if (nombre.text.trim().isEmpty ||
-                    telefono.text.trim().isEmpty ||
-                    direccion.text.trim().isEmpty) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Guardar informacion de empleado"),
-                        content: const Text("Debes ingresar todos los campos"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("OK"),
-                          )
-                        ],
+                TextField(
+                  enabled: false,
+                  controller: TextEditingController(text: user.email),
+                  decoration: const InputDecoration(
+                    label: Text("Correo"),
+                    icon: Icon(
+                      Icons.location_on,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.all(10.0),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (nombre.text.trim().isEmpty ||
+                        telefono.text.trim().isEmpty ||
+                        direccion.text.trim().isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title:
+                                const Text("Guardar informacion de empleado"),
+                            content:
+                                const Text("Debes ingresar todos los campos"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("OK"),
+                              )
+                            ],
+                          );
+                        },
                       );
-                    },
-                  );
-                  return;
-                }
-                try {
-                  user.updateDisplayName(nombre.text);
-                  CollectionReference empleados = FirebaseFirestore.instance
-                      .collection("empleados")
-                      .withConverter<Persona>(
-                        fromFirestore: (snap, _) =>
-                            Persona.fromJson(snap.data()!),
-                        toFirestore: (empleado, _) => empleado.toJson(),
+                      return;
+                    }
+                    try {
+                      user.updateDisplayName(nombre.text);
+                      final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+                      if (!empleado.exists) {
+                        empleado.reference.set(
+                          Persona(
+                            correo: user.email!,
+                            fechaRegistro: Timestamp.now(),
+                            direccion: direccion.text,
+                            telefono: telefono.text,
+                            nombre: nombre.text,
+                          ),
+                        );
+                      } else {
+                        empleado.reference.set(
+                          Persona(
+                            correo: user.email!,
+                            fechaRegistro: empleado.data()!.fechaRegistro,
+                            direccion: direccion.text,
+                            telefono: telefono.text,
+                            nombre: nombre.text,
+                          ),
+                        );
+                      }
+                      const snackBar = SnackBar(
+                        content: Text("Informacion guardada con exito"),
                       );
-                  empleados.doc(user.email).set(
-                        Persona(
-                          correo: user.email!,
-                          fechaRegistro: Timestamp.now(),
-                          direccion: direccion.text,
-                          telefono: telefono.text,
-                          nombre: nombre.text,
-                        ),
+                      scaffoldMessenger.showSnackBar(snackBar);
+                    } catch (e) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title:
+                                const Text("Guardar informacion de empleado"),
+                            content: const Text(
+                                "No se pudo guardar la informacion. Intenta de nuevo"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("OK"),
+                              )
+                            ],
+                          );
+                        },
                       );
-                  /* empleados.add( */
-                  /*   , */
-                  /* ); */
-                  Navigator.of(context).popAndPushNamed("/home");
-                } catch (e) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Guardar informacion de empleado"),
-                        content: const Text(
-                            "No se pudo guardar la informacion. Intenta de nuevo"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("OK"),
-                          )
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              child: const Text("Guardar"),
+                    }
+                  },
+                  child: const Text("Guardar"),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
