@@ -25,11 +25,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as HomePageArgs?;
-    print("args?.idx: ${args?.idx}");
     if (args != null) {
       currentPage.value = args.idx;
     }
-    print(currentPage);
     return Scaffold(
       body: Obx(
         () => IndexedStack(
