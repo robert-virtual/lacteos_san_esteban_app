@@ -57,10 +57,14 @@ class _LoginPageState extends State<LoginPage> {
                     prefixIcon: Icon(Icons.email), label: Text("Correo")),
               ),
               TextField(
-                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
                 controller: password,
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.password), label: Text("Clave")),
+                decoration: InputDecoration(
+                  suffix: IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.password)),
+                  prefixIcon: const Icon(Icons.password),
+                  label: const Text("Clave"),
+                ),
               ),
               const SizedBox(
                 height: 20,

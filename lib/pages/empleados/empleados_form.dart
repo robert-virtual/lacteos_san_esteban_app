@@ -12,6 +12,8 @@ class EmpleadosForm extends StatelessWidget {
   final correo = TextEditingController();
   final direccion = TextEditingController();
   final telefono = TextEditingController();
+  final clave = TextEditingController();
+  final confirmarClave = TextEditingController();
   // cliente
 
   final empleadosRef = FirebaseFirestore.instance
@@ -58,6 +60,24 @@ class EmpleadosForm extends StatelessWidget {
               maxLength: 8,
               decoration: const InputDecoration(
                 label: Text("Telefono"),
+              ),
+            ),
+            TextField(
+              controller: clave,
+              obscureText: true,
+              decoration: InputDecoration(
+                suffix: IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.password)),
+                label: const Text("Clave"),
+              ),
+            ),
+            TextField(
+              controller: confirmarClave,
+              obscureText: true,
+              decoration: InputDecoration(
+                suffix: IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.password)),
+                label: const Text("Confirmar Clave"),
               ),
             ),
           ],
