@@ -30,6 +30,7 @@ class VentasForm extends StatelessWidget {
       .withConverter<Persona>(
           fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
           toFirestore: (empleado, _) => empleado.toJson());
+  final bitacoraRef = FirebaseFirestore.instance.collection("bitacora");
   final ventasRef = FirebaseFirestore.instance
       .collection("ventas")
       .withConverter<Venta>(
@@ -212,17 +213,30 @@ class VentasForm extends StatelessWidget {
                 );
                 return;
               }
+              final venta = Venta(
+                cliente: cliente.value!,
+                empleado:
+                    empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
+                fecha: Timestamp.now(),
+                detalles: detalles,
+              );
               ventasRef
                   .add(
-                Venta(
-                  cliente: cliente.value!,
-                  empleado: empleadosRef
-                      .doc(FirebaseAuth.instance.currentUser!.email),
-                  fecha: Timestamp.now(),
-                  detalles: detalles,
-                ),
+                venta,
               )
                   .then((value) {
+                bitacoraRef.add(
+                  {
+                    "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                    "nombreEmpleado":
+                        FirebaseAuth.instance.currentUser!.displayName,
+                    "empleadoRef": empleadosRef
+                        .doc(FirebaseAuth.instance.currentUser!.email),
+                    "fecha": Timestamp.now(),
+                    "accion": "Insertar venta",
+                    "datos": venta.toJson()
+                  },
+                );
                 const snackbar =
                     SnackBar(content: Text("Venta guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);

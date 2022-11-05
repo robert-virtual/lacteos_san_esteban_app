@@ -3,14 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 
-class CuentaPage extends StatefulWidget {
-  const CuentaPage({super.key});
+class CuentaPage extends StatelessWidget {
+  CuentaPage({super.key});
+  final empleadosRef = FirebaseFirestore.instance
+      .collection("empleados")
+      .withConverter<Persona>(
+          fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
+          toFirestore: (empleado, _) => empleado.toJson());
 
-  @override
-  State<CuentaPage> createState() => _CuentaPageState();
-}
-
-class _CuentaPageState extends State<CuentaPage> {
+  final bitacoraRef = FirebaseFirestore.instance.collection("bitacora");
   final nombre = TextEditingController(
       text: FirebaseAuth.instance.currentUser!.displayName);
   final direccion = TextEditingController();
@@ -142,24 +143,52 @@ class _CuentaPageState extends State<CuentaPage> {
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
 
                       if (!empleado.exists) {
-                        empleado.reference.set(
-                          Persona(
-                            correo: user.email!,
-                            fechaRegistro: Timestamp.now(),
-                            direccion: direccion.text,
-                            telefono: telefono.text,
-                            nombre: nombre.text,
-                          ),
+                        final datos = Persona(
+                          correo: user.email!,
+                          fechaRegistro: Timestamp.now(),
+                          direccion: direccion.text,
+                          telefono: telefono.text,
+                          nombre: nombre.text,
+                        );
+                        await empleado.reference.set(
+                          datos,
+                        );
+                        bitacoraRef.add(
+                          {
+                            "correoEmpleado":
+                                FirebaseAuth.instance.currentUser!.email,
+                            "nombreEmpleado":
+                                FirebaseAuth.instance.currentUser!.displayName,
+                            "empleadoRef": empleadosRef
+                                .doc(FirebaseAuth.instance.currentUser!.email),
+                            "fecha": Timestamp.now(),
+                            "accion": "Insertar Empleado",
+                            "datos": datos.toJson()
+                          },
                         );
                       } else {
-                        empleado.reference.set(
-                          Persona(
-                            correo: user.email!,
-                            fechaRegistro: empleado.data()!.fechaRegistro,
-                            direccion: direccion.text,
-                            telefono: telefono.text,
-                            nombre: nombre.text,
-                          ),
+                        final datos = Persona(
+                          correo: user.email!,
+                          fechaRegistro: empleado.data()!.fechaRegistro,
+                          direccion: direccion.text,
+                          telefono: telefono.text,
+                          nombre: nombre.text,
+                        );
+                        await empleado.reference.set(
+                          datos,
+                        );
+                        bitacoraRef.add(
+                          {
+                            "correoEmpleado":
+                                FirebaseAuth.instance.currentUser!.email,
+                            "nombreEmpleado":
+                                FirebaseAuth.instance.currentUser!.displayName,
+                            "empleadoRef": empleadosRef
+                                .doc(FirebaseAuth.instance.currentUser!.email),
+                            "fecha": Timestamp.now(),
+                            "accion": "Actualizar empleado",
+                            "datos": datos.toJson()
+                          },
                         );
                       }
                       const snackBar = SnackBar(

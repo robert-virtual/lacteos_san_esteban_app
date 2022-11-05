@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 class ComprasForm extends StatelessWidget {
   ComprasForm({super.key});
+  final bitacoraRef = FirebaseFirestore.instance.collection("bitacora");
 
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   final productosStream = FirebaseFirestore.instance
@@ -214,17 +215,30 @@ class ComprasForm extends StatelessWidget {
                 );
                 return;
               }
+              final compra = Compra(
+                proveedor: cliente.value!,
+                empleado:
+                    empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
+                fecha: Timestamp.now(),
+                detalles: detalles,
+              );
               comprasRef
                   .add(
-                Compra(
-                  proveedor: cliente.value!,
-                  empleado: empleadosRef
-                      .doc(FirebaseAuth.instance.currentUser!.email),
-                  fecha: Timestamp.now(),
-                  detalles: detalles,
-                ),
+                compra,
               )
                   .then((value) {
+                bitacoraRef.add(
+                  {
+                    "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                    "nombreEmpleado":
+                        FirebaseAuth.instance.currentUser!.displayName,
+                    "empleadoRef": empleadosRef
+                        .doc(FirebaseAuth.instance.currentUser!.email),
+                    "fecha": Timestamp.now(),
+                    "accion": "Insertar Compra",
+                    "datos": compra.toJson()
+                  },
+                );
                 const snackbar =
                     SnackBar(content: Text("Compra guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);

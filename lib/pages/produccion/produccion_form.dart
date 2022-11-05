@@ -9,6 +9,7 @@ import 'package:lacteos_san_esteban_app/models/venta.dart';
 class ProduccionForm extends StatelessWidget {
   ProduccionForm({super.key});
 
+  final bitacoraRef = FirebaseFirestore.instance.collection("bitacora");
   final formatDate = DateFormat("yyyy/MM/dd h:mm a");
   var productos = <QueryDocumentSnapshot<Producto>>[].obs;
   final productosInsumoStream = FirebaseFirestore.instance
@@ -224,21 +225,34 @@ class ProduccionForm extends StatelessWidget {
                 );
                 return;
               }
+              final produccion = Produccion(
+                cantidadProducida:
+                    "${cantidad.text} ${productoInsumo.value != null ? productos.firstWhere(
+                          (p0) => p0.reference == productoInsumo.value,
+                        ).data().unidad : ""}",
+                empleado:
+                    empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
+                fecha: Timestamp.now(),
+                insumos: insumos,
+                producto: producto.value!,
+              );
               produccionRef
                   .add(
-                Produccion(
-                  cantidadProducida:
-                      "${cantidad.text} ${productoInsumo.value != null ? productos.firstWhere(
-                            (p0) => p0.reference == productoInsumo.value,
-                          ).data().unidad : ""}",
-                  empleado: empleadosRef
-                      .doc(FirebaseAuth.instance.currentUser!.email),
-                  fecha: Timestamp.now(),
-                  insumos: insumos,
-                  producto: producto.value!,
-                ),
+                produccion,
               )
                   .then((value) {
+                bitacoraRef.add(
+                  {
+                    "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                    "nombreEmpleado":
+                        FirebaseAuth.instance.currentUser!.displayName,
+                    "empleadoRef": empleadosRef
+                        .doc(FirebaseAuth.instance.currentUser!.email),
+                    "fecha": Timestamp.now(),
+                    "accion": "Insertar produccion",
+                    "datos": produccion.toJson()
+                  },
+                );
                 const snackbar =
                     SnackBar(content: Text("Produccion guardada con exito"));
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);

@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 
 class EmpleadosForm extends StatelessWidget {
   EmpleadosForm({super.key});
+
+  final bitacoraRef = FirebaseFirestore.instance.collection("bitacora");
   // cliente
   final nombre = TextEditingController();
   final correo = TextEditingController();
@@ -63,18 +66,31 @@ class EmpleadosForm extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           final res = empleadosRef.doc(correo.text.trim());
+          final empleado = Persona(
+            correo: correo.text,
+            nombre: nombre.text,
+            telefono: telefono.text,
+            direccion: direccion.text,
+            fechaRegistro: Timestamp.now(),
+          );
           res
               .set(
-            Persona(
-              correo: correo.text,
-              nombre: nombre.text,
-              telefono: telefono.text,
-              direccion: direccion.text,
-              fechaRegistro: Timestamp.now(),
-            ),
+            empleado,
           )
               .then(
             (value) {
+              bitacoraRef.add(
+                {
+                  "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                  "nombreEmpleado":
+                      FirebaseAuth.instance.currentUser!.displayName,
+                  "empleadoRef": empleadosRef
+                      .doc(FirebaseAuth.instance.currentUser!.email),
+                  "fecha": Timestamp.now(),
+                  "accion": "Insertar empleado",
+                  "datos": empleado.toJson()
+                },
+              );
               Navigator.pop(context, res);
             },
           );
