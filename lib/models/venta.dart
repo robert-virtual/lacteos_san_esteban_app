@@ -70,9 +70,11 @@ class Persona {
   String direccion;
   String telefono;
   String nombre;
+  bool? admin;
   Timestamp fechaRegistro;
   Persona({
     required this.correo,
+    this.admin,
     required this.fechaRegistro,
     required this.direccion,
     required this.telefono,
@@ -81,6 +83,7 @@ class Persona {
 
   factory Persona.fromJson(Map<String, dynamic> map) {
     return Persona(
+        admin: map["admin"],
         correo: map["correo"],
         fechaRegistro: map["fecha_registro"],
         direccion: map["direccion"],
@@ -93,7 +96,8 @@ class Persona {
       "correo": correo,
       "direccion": direccion,
       "telefono": telefono,
-      "nombre": nombre
+      "nombre": nombre,
+      "admin": admin
     };
   }
 }
