@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
+  bool passVisible = false;
   CollectionReference empleados =
       FirebaseFirestore.instance.collection("empleados").withConverter<Persona>(
             fromFirestore: (snap, _) => Persona.fromJson(snap.data()!),
@@ -57,14 +58,21 @@ class _LoginPageState extends State<LoginPage> {
                     prefixIcon: Icon(Icons.email), label: Text("Correo")),
               ),
               TextField(
-                obscureText: true,
                 controller: password,
-                decoration: InputDecoration(
-                  suffix: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.password)),
-                  prefixIcon: const Icon(Icons.password),
-                  label: const Text("Clave"),
+                obscureText: !passVisible,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.key),
+                  label: Text("Clave"),
                 ),
+              ),
+              Row(
+                children: [
+                  Checkbox(value: passVisible, onChanged: toogglePassVisible),
+                  TextButton(
+                    onPressed: toogglePassVisible,
+                    child: const Text("Mostrar clave"),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 20,
@@ -118,5 +126,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void toogglePassVisible([bool? value]) {
+    setState(() {
+      passVisible = value ?? !passVisible;
+    });
   }
 }
