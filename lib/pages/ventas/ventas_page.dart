@@ -56,6 +56,8 @@ class VentasPage extends StatelessWidget {
                 SliverAppBar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   elevation: 0,
+                  primary: false,
+                  automaticallyImplyLeading: false,
                   title: Text("${snap.data!.docs.length} Resultados"),
                   actions: [
                     Wrap(

@@ -27,13 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       if (user_ == null) {
         return;
       }
-      empleados.doc(user_.email).get().then((value) {
-        if (value.exists) {
-          Navigator.of(context).popAndPushNamed("/home");
-          return;
-        }
-        Navigator.of(context).popAndPushNamed("/cuenta");
-      });
+      Navigator.of(context).popAndPushNamed("/home");
     });
   }
 
