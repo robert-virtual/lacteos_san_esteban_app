@@ -67,6 +67,7 @@ class CuentaPage extends StatelessWidget {
           if (empleado.exists) {
             telefono.text = empleado.data()!.telefono;
             direccion.text = empleado.data()!.direccion;
+            nombre.text = empleado.data()!.nombre;
           }
           return Center(
             child: ListView(

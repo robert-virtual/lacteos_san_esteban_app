@@ -148,10 +148,12 @@ class EmpleadosForm extends StatelessWidget {
             if (checkInputs()) {
               return;
             }
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            final credentials =
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: correo.text,
               password: clave.text,
             );
+            await credentials.user?.updateDisplayName(nombre.text);
             final res = empleadosRef.doc(correo.text.trim());
             final empleado = Persona(
               admin: admin.value,
