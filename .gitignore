@@ -1,3 +1,6 @@
+flutter_jank*
+*.log
+
 # Miscellaneous
 *.class
 *.log
