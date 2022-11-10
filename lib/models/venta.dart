@@ -66,16 +66,16 @@ class DetalleVenta {
 }
 
 class Persona {
-  String correo;
+  String? correo;
   String direccion;
   String telefono;
   String nombre;
-  bool? admin;
-  Timestamp fechaRegistro;
+  bool? admin = false;
+  Timestamp? fechaRegistro;
   Persona({
-    required this.correo,
-    this.admin,
-    required this.fechaRegistro,
+    this.correo,
+    this.admin = false,
+    this.fechaRegistro,
     required this.direccion,
     required this.telefono,
     required this.nombre,

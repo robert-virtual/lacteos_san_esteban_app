@@ -16,6 +16,9 @@ class EmpleadosForm extends StatelessWidget {
   final clave = TextEditingController();
   var admin = false.obs;
   var visiblePass = false.obs;
+  var passwordsMatch = true.obs;
+  var validEmail = true.obs;
+  var emptyPass = false.obs;
   final confirmarClave = TextEditingController();
   // cliente
 
@@ -37,11 +40,15 @@ class EmpleadosForm extends StatelessWidget {
               label: Text("Nombre"),
             ),
           ),
-          TextField(
-            controller: correo,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              label: Text("Correo"),
+          Obx(
+            () => TextField(
+              controller: correo,
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (value) => validEmail.value = value.isEmail,
+              decoration: InputDecoration(
+                label: const Text("Correo"),
+                errorText: !validEmail.value ? "Correo no valido" : null,
+              ),
             ),
           ),
           TextField(
@@ -63,8 +70,10 @@ class EmpleadosForm extends StatelessWidget {
             () => TextField(
               controller: clave,
               obscureText: !visiblePass.value,
-              decoration: const InputDecoration(
-                label: Text("Clave"),
+              onChanged: (value) => emptyPass.value = clave.text.trim().isEmpty,
+              decoration: InputDecoration(
+                label: const Text("Clave"),
+                errorText: emptyPass.value ? "Campo requerido" : null,
               ),
             ),
           ),
@@ -72,8 +81,10 @@ class EmpleadosForm extends StatelessWidget {
             () => TextField(
               controller: confirmarClave,
               obscureText: !visiblePass.value,
-              decoration: const InputDecoration(
-                label: Text("Confirmar Clave"),
+              onChanged: (value) => passwordsMatch.value = value == clave.text,
+              decoration: InputDecoration(
+                label: const Text("Confirmar Clave"),
+                errorText: !passwordsMatch.value ? "Claves no coinciden" : null,
               ),
             ),
           ),
@@ -124,35 +135,55 @@ class EmpleadosForm extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final res = empleadosRef.doc(correo.text.trim());
-          final empleado = Persona(
-            admin: admin.value,
-            correo: correo.text,
-            nombre: nombre.text,
-            telefono: telefono.text,
-            direccion: direccion.text,
-            fechaRegistro: Timestamp.now(),
-          );
-          await res.set(
-            empleado,
-          );
+          try {
+            if (!(await isAdmin())) {
+              const snackBar = SnackBar(
+                content: Text(
+                    "No tiene los permisos necesarios para agregar nuevos empleados"),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              return;
+            }
 
-          bitacoraRef.add(
-            {
-              "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
-              "nombreEmpleado": FirebaseAuth.instance.currentUser!.displayName,
-              "empleadoRef":
-                  empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
-              "fecha": Timestamp.now(),
-              "accion": "Insertar empleado",
-              "datos": empleado.toJson()
-            },
-          );
-          FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: correo.text,
-            password: clave.text,
-          );
-          Navigator.pop(context, res);
+            if (checkInputs()) {
+              return;
+            }
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: correo.text,
+              password: clave.text,
+            );
+            final res = empleadosRef.doc(correo.text.trim());
+            final empleado = Persona(
+              admin: admin.value,
+              correo: correo.text,
+              nombre: nombre.text,
+              telefono: telefono.text,
+              direccion: direccion.text,
+              fechaRegistro: Timestamp.now(),
+            );
+            await res.set(
+              empleado,
+            );
+
+            bitacoraRef.add(
+              {
+                "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                "nombreEmpleado":
+                    FirebaseAuth.instance.currentUser!.displayName,
+                "empleadoRef":
+                    empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
+                "fecha": Timestamp.now(),
+                "accion": "Insertar empleado",
+                "datos": empleado.toJson()
+              },
+            );
+            Navigator.pop(context, res);
+          } catch (e) {
+            final snackBar = SnackBar(
+              content: Text(e.toString()),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         },
         icon: const Icon(Icons.save),
         label: const Text("Guardar"),
@@ -164,4 +195,23 @@ class EmpleadosForm extends StatelessWidget {
 
   void changeVisiblePass([bool? value]) =>
       visiblePass.value = value ?? !visiblePass.value;
+
+  Future<bool> isAdmin() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return false;
+
+    final empleado = await empleadosRef.doc(currentUser.email).get();
+    if (!empleado.exists) return false;
+    print("empleado exists");
+    final data = empleado.data();
+    if (data == null) return false;
+    return data.admin!;
+  }
+
+  bool checkInputs() {
+    passwordsMatch.value = clave.text == confirmarClave.text;
+    validEmail.value = correo.text.isEmail;
+    emptyPass.value = clave.text.isEmpty;
+    return !passwordsMatch.value || !validEmail.value || emptyPass.value;
+  }
 }

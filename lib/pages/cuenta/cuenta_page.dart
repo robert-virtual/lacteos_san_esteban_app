@@ -145,13 +145,12 @@ class CuentaPage extends StatelessWidget {
                       if (!empleado.exists) {
                         final datos = Persona(
                           correo: user.email!,
-                          fechaRegistro: Timestamp.now(),
                           direccion: direccion.text,
                           telefono: telefono.text,
                           nombre: nombre.text,
                         );
-                        await empleado.reference.set(
-                          datos,
+                        await empleado.reference.update(
+                          datos.toJson(),
                         );
                         bitacoraRef.add(
                           {
