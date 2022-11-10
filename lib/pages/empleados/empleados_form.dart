@@ -158,7 +158,7 @@ class EmpleadosForm extends StatelessWidget {
             final empleado = Persona(
               admin: admin.value,
               correo: correo.text,
-              nombre: nombre.text,
+              nombre: nombre.text.trim().toLowerCase(),
               telefono: telefono.text,
               direccion: direccion.text,
               fechaRegistro: Timestamp.now(),

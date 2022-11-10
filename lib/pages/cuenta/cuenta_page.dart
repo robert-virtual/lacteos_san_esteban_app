@@ -149,7 +149,7 @@ class CuentaPage extends StatelessWidget {
                           correo: user.email!,
                           direccion: direccion.text,
                           telefono: telefono.text,
-                          nombre: nombre.text,
+                          nombre: nombre.text.trim().toLowerCase(),
                         );
                         await empleado.reference.update(
                           datos.toJson(),
