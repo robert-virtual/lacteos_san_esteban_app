@@ -40,7 +40,8 @@ class CuentaPage extends StatelessWidget {
           TextButton(
             onPressed: () {
               FirebaseAuth.instance.signOut().then((value) {
-                Navigator.of(context).popAndPushNamed("/login");
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil("/login", (r) => false);
               });
             },
             child: const Text(
