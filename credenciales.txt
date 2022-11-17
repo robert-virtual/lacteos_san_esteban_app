@@ -1,7 +1,0 @@
-usuario administrador:
-  admin@gmail.com
-  clave: flutter
-
-usuario no administrador:
-  greciaassaf@gmail.com
-  clave: gestionproyetos
