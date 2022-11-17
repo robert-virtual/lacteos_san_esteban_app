@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:lacteos_san_esteban_app/models/venta.dart';
 import 'package:get/get.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class VentasPage extends StatelessWidget {
   VentasPage({super.key, this.cliente, this.empleado});
@@ -12,8 +18,11 @@ class VentasPage extends StatelessWidget {
   var rxCliente = Rx<DocumentReference<Persona>?>(null);
   var rxFechaInicial = Rx<Timestamp?>(null);
   var rxFechaFinal = Rx<Timestamp?>(null);
+  final pdf = pw.Document();
+  final ventas = <Venta>[].obs;
   final formatDateTime = DateFormat("dd MMM yyyy h:mm a");
   final formatDate = DateFormat("dd/MM/yyyy");
+  final formatDatePdf = DateFormat("dd-MM-yyyy-h-mm-a");
   final ventasCollection = FirebaseFirestore.instance
       .collection("ventas")
       .withConverter<Venta>(
@@ -30,6 +39,93 @@ class VentasPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ventas"),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              pdf.addPage(
+                pw.Page(
+                  pageFormat: PdfPageFormat.a4,
+                  build: (pw.Context context) {
+                    final boldText =
+                        pw.TextStyle(fontWeight: pw.FontWeight.bold);
+                    var items = <pw.TableRow>[
+                      pw.TableRow(
+                        children: [
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(2.0),
+                            child: pw.Text("Cliente", style: boldText),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(2.0),
+                            child: pw.Text("Empleado", style: boldText),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(2.0),
+                            child: pw.Text("Fecha", style: boldText),
+                          )
+                        ],
+                      )
+                    ];
+                    items.addAll(
+                      ventas.value.map(
+                        (e) => pw.TableRow(
+                          children: [
+                            pw.Padding(
+                                padding: const pw.EdgeInsets.all(2.0),
+                                child: pw.Text(e.cliente.id)),
+                            pw.Padding(
+                                padding: const pw.EdgeInsets.all(2.0),
+                                child: pw.Text(e.empleado.id)),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(2.0),
+                              child: pw.Text(
+                                formatDate.format(
+                                  e.fecha.toDate(),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                    /* final imageProvider = */
+                    /*     Image.asset("/images/san_esteban.jpg").image; */
+                    /* final image = pw.Image(imageProvider); */
+                    return pw.ListView(
+                      children: [
+                        pw.Text(
+                          "Lacteos san esteban",
+                          style: pw.TextStyle(
+                              fontSize: 25.0, fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.SizedBox(height: 10.0),
+                        pw.Table(
+                          children: items,
+                          border: pw.TableBorder.all(width: 1.0),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              );
+              final documents = await getApplicationDocumentsDirectory();
+              print("documents path: ${documents.path}");
+              final filePath =
+                  "${documents.path}/informe de ventas ${formatDatePdf.format(DateTime.now())}";
+              try {
+                final file = File(filePath);
+                await file.writeAsBytes(await pdf.save());
+              } catch (e) {
+                print(e);
+              }
+              OpenFilex.open(filePath);
+            },
+            child: Text(
+              "Guardar PDF",
+              style: TextStyle(color: Theme.of(context).hintColor),
+            ),
+          )
+        ],
       ),
       body: Obx(() => StreamBuilder(
           stream: ventasCollection
@@ -51,6 +147,7 @@ class VentasPage extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             }
+            ventas.value = snap.data!.docs.map((e) => e.data()).toList();
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -154,17 +251,20 @@ class VentasPage extends StatelessWidget {
                                                 Theme.of(context).hintColor)),
                                     OutlinedButton(
                                       child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Obx(() => Text(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Obx(
+                                            () => Text(
                                                 rxFechaInicial.value != null
                                                     ? formatDate.format(
                                                         rxFechaInicial.value!
                                                             .toDate())
-                                                    : "Seleccionar fecha")),
-                                            const Icon(Icons.date_range)
-                                          ]),
+                                                    : "Seleccionar fecha"),
+                                          ),
+                                          const Icon(Icons.date_range)
+                                        ],
+                                      ),
                                       onPressed: () async {
                                         final fechaInical =
                                             await showDatePicker(
