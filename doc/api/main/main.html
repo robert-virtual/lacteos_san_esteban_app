@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the main function from the main library, for the Dart programming language.">
+  <title>main function - main library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">lacteos_san_esteban_app</a></li>
+    <li><a href="../main/main-library.html">main</a></li>
+    <li class="self-crumb">main function</li>
+  </ol>
+  <div class="self-name">main</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">main</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">main</span>(<wbr>)
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  &#47;* await FirebaseAuth.instance.useAuthEmulator(&#39;localhost&#39;, 9099); *&#47;
+  FirebaseAuth.instanceFor(app: Firebase.app(), persistence: Persistence.LOCAL);
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(primarySwatch: Colors.orange),
+    &#47;* darkTheme: ThemeData.dark(), *&#47;
+    initialRoute:
+        FirebaseAuth.instance.currentUser != null ? &quot;&#47;home&quot; : &quot;&#47;login&quot;,
+    routes: {
+      &quot;&#47;login&quot;: (context) =&gt; const LoginPage(),
+      &quot;&#47;home&quot;: (context) =&gt; HomePage(),
+      &quot;&#47;compras_form&quot;: (context) =&gt; ComprasForm(),
+      &quot;&#47;ventas_form&quot;: (context) =&gt; VentasForm(),
+      &quot;&#47;produccion_form&quot;: (context) =&gt; ProduccionForm(),
+      &quot;&#47;cuenta&quot;: (context) =&gt; CuentaPage(),
+      &quot;&#47;clientes_form&quot;: (context) =&gt; ClientesForm(),
+      &quot;&#47;proveedores_form&quot;: (context) =&gt; ProveedoresForm(),
+      &quot;&#47;empleados_form&quot;: (context) =&gt; EmpleadosForm(),
+    },
+  ));
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">lacteos_san_esteban_app</a></li>
+  <li><a href="../main/main-library.html">main</a></li>
+  <li class="self-crumb">main function</li>
+</ol>
+
+
+    <h5>main library</h5>
+    <ol>
+
+
+
+
+
+  <li class="section-title"><a href="../main/main-library.html#functions">Functions</a></li>
+  <li><a href="../main/main.html">main</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    lacteos_san_esteban_app
+      1.0.0+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

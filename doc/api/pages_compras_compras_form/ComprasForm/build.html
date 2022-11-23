@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the build method from the ComprasForm class, for the Dart programming language.">
+  <title>build method - ComprasForm class - compras_form library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">lacteos_san_esteban_app</a></li>
+    <li><a href="../../pages_compras_compras_form/pages_compras_compras_form-library.html">compras_form</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm-class.html">ComprasForm</a></li>
+    <li class="self-crumb">build method</li>
+  </ol>
+  <div class="self-name">build</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">build</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<div>
+  <ol class="annotation-list">
+    <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+  </ol>
+</div>
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
+<span class="name ">build</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+</ol>)
+
+      <div class="features">override</div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Describes the part of the user interface represented by this widget.</p>
+<p>The framework calls this method when this widget is inserted into the tree
+in a given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> and when the dependencies of this widget change
+(e.g., an <a href="https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html">InheritedWidget</a> referenced by this widget changes). This
+method can potentially be called in every frame and should not have any side
+effects beyond building a widget.</p>
+<p>The framework replaces the subtree below this widget with the widget
+returned by this method, either by updating the existing subtree or by
+removing the subtree and inflating a new subtree, depending on whether the
+widget returned by this method can update the root of the existing
+subtree, as determined by calling <a href="https://api.flutter.dev/flutter/widgets/Widget/canUpdate.html">Widget.canUpdate</a>.</p>
+<p>Typically implementations return a newly created constellation of widgets
+that are configured with information from this widget's constructor and
+from the given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a>.</p>
+<p>The given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> contains information about the location in the
+tree at which this widget is being built. For example, the context
+provides the set of inherited widgets for this location in the tree. A
+given widget might be built with multiple different <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a>
+arguments over time if the widget is moved around the tree or if the
+widget is inserted into the tree in multiple places at once.</p>
+<p>The implementation of this method must only depend on:</p>
+<ul>
+<li>the fields of the widget, which themselves must not change over time,
+and</li>
+<li>any ambient state obtained from the <code>context</code> using
+<a href="https://api.flutter.dev/flutter/widgets/BuildContext/dependOnInheritedWidgetOfExactType.html">BuildContext.dependOnInheritedWidgetOfExactType</a>.</li>
+</ul>
+<p>If a widget's <a href="../../pages_compras_compras_form/ComprasForm/build.html">build</a> method is to depend on anything else, use a
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> instead.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html">StatelessWidget</a>, which contains the discussion on performance considerations.</li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          title: Text(&quot;Agregar Compras&quot;),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0, top: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      &quot;Proveedor&quot;,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(&quot;&#47;proveedores_form&quot;);
+                      },
+                      child: Row(children: const [
+                        Icon(Icons.add),
+                        Text(&quot;Nuevo Proveedor&quot;)
+                      ]),
+                    ),
+                  ],
+                ),
+              ),
+              StreamBuilder(
+                  stream: proveedoresStream,
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (snap.hasError) {
+                      return const Center(
+                        child: Text(&quot;Ups ha habido un error&quot;),
+                      );
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Obx(
+                        () =&gt; DropdownButton&lt;DocumentReference&lt;Persona&gt;&gt;(
+                          value: cliente.value,
+                          onChanged: (text) {
+                            if (text != null) {
+                              cliente.value = text;
+                            }
+                          },
+                          items: snap.data!.docs
+                              .map(
+                                (e) =&gt; DropdownMenuItem(
+                                  value: e.reference,
+                                  child: Text(e.data().nombre),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    );
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                    &quot;Empleado: ${FirebaseAuth.instance.currentUser!.email}&quot;),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(&quot;Fecha: ${formatDate.format(DateTime.now())} &quot;),
+              )
+            ],
+          ),
+        ),
+        SliverAppBar(
+          primary: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Obx(
+            () {
+              final total = detalles.isNotEmpty
+                  ? detalles.map((e) =&gt; e.precio).reduce((pv, cv) =&gt; pv + cv)
+                  : 0;
+              return Text(&quot;Productos, Total: $total&quot;);
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                buildAgregarProductoBottomSheet(context);
+              },
+              child: Row(children: const [Icon(Icons.add), Text(&quot;Agregar&quot;)]),
+            ),
+          ],
+        ),
+        Obx(
+          () =&gt; SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, idx) {
+                final detalle = detalles[idx];
+                return Dismissible(
+                  background: Container(
+                    padding: const EdgeInsets.all(10),
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          &quot;Eliminar&quot;,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          &quot;Eliminar&quot;,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  key: ValueKey(detalle),
+                  onDismissed: (direcction) {
+                    detalles.removeAt(idx);
+                  },
+                  child: ListTile(
+                    title: Text(
+                      detalle.producto.id,
+                    ),
+                    subtitle: Text(
+                      &quot;Cantidad: ${detalle.cantidad} ${detalle.unidadMedida}, Precio: ${detalle.precio}, Subtotal: ${detalle.precio * detalle.cantidad}&quot;,
+                    ),
+                  ),
+                );
+              },
+              childCount: detalles.length,
+            ),
+          ),
+        ),
+      ],
+    ),
+    floatingActionButton: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        const SizedBox(width: 10.0),
+        FloatingActionButton.extended(
+          onPressed: () {
+            if (cliente.value == null || detalles.isEmpty) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text(&quot;Guardar Compra&quot;),
+                    content: const Text(
+                        &quot;Debes seleccionar un proveedor y agregar productos a la Compra&quot;),
+                    actions: [
+                      TextButton(
+                        child: const Text(&quot;Ok&quot;),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+            final compra = Compra(
+              proveedor: cliente.value!,
+              empleado:
+                  empleadosRef.doc(FirebaseAuth.instance.currentUser!.email),
+              fecha: Timestamp.now(),
+              detalles: detalles,
+            );
+            comprasRef
+                .add(
+              compra,
+            )
+                .then((value) {
+              bitacoraRef.add(
+                {
+                  &quot;correoEmpleado&quot;: FirebaseAuth.instance.currentUser!.email,
+                  &quot;nombreEmpleado&quot;:
+                      FirebaseAuth.instance.currentUser!.displayName,
+                  &quot;empleadoRef&quot;: empleadosRef
+                      .doc(FirebaseAuth.instance.currentUser!.email),
+                  &quot;fecha&quot;: Timestamp.now(),
+                  &quot;accion&quot;: &quot;Insertar Compra&quot;,
+                  &quot;datos&quot;: compra.toJson()
+                },
+              );
+              const snackbar =
+                  SnackBar(content: Text(&quot;Compra guardada con exito&quot;));
+              ScaffoldMessenger.of(context).showSnackBar(snackbar);
+
+              Navigator.of(context).pop();
+            }).catchError(
+              (err) {
+                print(err);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text(&quot;Guardar Compra&quot;),
+                      content:
+                          const Text(&quot;Hubo un error al guardar la Compra&quot;),
+                      actions: [
+                        TextButton(
+                          child: const Text(&quot;Ok&quot;),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          },
+          label: const Text(&quot;Guardar&quot;),
+          icon: const Icon(Icons.save),
+        ),
+      ],
+    ),
+  );
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">lacteos_san_esteban_app</a></li>
+  <li><a href="../../pages_compras_compras_form/pages_compras_compras_form-library.html">compras_form</a></li>
+  <li><a href="../../pages_compras_compras_form/ComprasForm-class.html">ComprasForm</a></li>
+  <li class="self-crumb">build method</li>
+</ol>
+
+
+    <h5>ComprasForm class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../pages_compras_compras_form/ComprasForm-class.html#constructors">Constructors</a></li>
+          <li><a href="../../pages_compras_compras_form/ComprasForm/ComprasForm.html">ComprasForm</a></li>
+
+
+    <li class="section-title">
+      <a href="../../pages_compras_compras_form/ComprasForm-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/bitacoraRef.html">bitacoraRef</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/cantidad.html">cantidad</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/cliente.html">cliente</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/comprasRef.html">comprasRef</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/detalles.html">detalles</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/empleadosRef.html">empleadosRef</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/formatDate.html">formatDate</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/precio.html">precio</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/producto.html">producto</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/productosStream.html">productosStream</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/proveedoresStream.html">proveedoresStream</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/unidadesMedidaStream.html">unidadesMedidaStream</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/unidadMedida.html">unidadMedida</a></li>
+
+    <li class="section-title"><a href="../../pages_compras_compras_form/ComprasForm-class.html#instance-methods">Methods</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/build.html">build</a></li>
+    <li><a href="../../pages_compras_compras_form/ComprasForm/buildAgregarProductoBottomSheet.html">buildAgregarProductoBottomSheet</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">toDiagnosticsNode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">toStringDeep</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">toStringShallow</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/toStringShort.html">toStringShort</a></li>
+
+    <li class="section-title inherited"><a href="../../pages_compras_compras_form/ComprasForm-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    lacteos_san_esteban_app
+      1.0.0+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

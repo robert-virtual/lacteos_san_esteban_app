@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the build method from the VentasPage class, for the Dart programming language.">
+  <title>build method - VentasPage class - ventas_page library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">lacteos_san_esteban_app</a></li>
+    <li><a href="../../pages_ventas_ventas_page/pages_ventas_ventas_page-library.html">ventas_page</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage-class.html">VentasPage</a></li>
+    <li class="self-crumb">build method</li>
+  </ol>
+  <div class="self-name">build</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">build</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<div>
+  <ol class="annotation-list">
+    <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+  </ol>
+</div>
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
+<span class="name ">build</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+</ol>)
+
+      <div class="features">override</div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Describes the part of the user interface represented by this widget.</p>
+<p>The framework calls this method when this widget is inserted into the tree
+in a given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> and when the dependencies of this widget change
+(e.g., an <a href="https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html">InheritedWidget</a> referenced by this widget changes). This
+method can potentially be called in every frame and should not have any side
+effects beyond building a widget.</p>
+<p>The framework replaces the subtree below this widget with the widget
+returned by this method, either by updating the existing subtree or by
+removing the subtree and inflating a new subtree, depending on whether the
+widget returned by this method can update the root of the existing
+subtree, as determined by calling <a href="https://api.flutter.dev/flutter/widgets/Widget/canUpdate.html">Widget.canUpdate</a>.</p>
+<p>Typically implementations return a newly created constellation of widgets
+that are configured with information from this widget's constructor and
+from the given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a>.</p>
+<p>The given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> contains information about the location in the
+tree at which this widget is being built. For example, the context
+provides the set of inherited widgets for this location in the tree. A
+given widget might be built with multiple different <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a>
+arguments over time if the widget is moved around the tree or if the
+widget is inserted into the tree in multiple places at once.</p>
+<p>The implementation of this method must only depend on:</p>
+<ul>
+<li>the fields of the widget, which themselves must not change over time,
+and</li>
+<li>any ambient state obtained from the <code>context</code> using
+<a href="https://api.flutter.dev/flutter/widgets/BuildContext/dependOnInheritedWidgetOfExactType.html">BuildContext.dependOnInheritedWidgetOfExactType</a>.</li>
+</ul>
+<p>If a widget's <a href="../../pages_ventas_ventas_page/VentasPage/build.html">build</a> method is to depend on anything else, use a
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> instead.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html">StatelessWidget</a>, which contains the discussion on performance considerations.</li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+Widget build(BuildContext context) {
+  if (empleado != null) {
+    rxEmpleado.value = empleado;
+  }
+  if (cliente != null) {
+    rxCliente.value = cliente;
+  }
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(&quot;Ventas&quot;),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            pdf.addPage(
+              pw.Page(
+                pageFormat: PdfPageFormat.a4,
+                build: (pw.Context context) {
+                  final boldText =
+                      pw.TextStyle(fontWeight: pw.FontWeight.bold);
+                  var items = &lt;pw.TableRow&gt;[
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(2.0),
+                          child: pw.Text(&quot;Cliente&quot;, style: boldText),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(2.0),
+                          child: pw.Text(&quot;Empleado&quot;, style: boldText),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(2.0),
+                          child: pw.Text(&quot;Fecha&quot;, style: boldText),
+                        )
+                      ],
+                    )
+                  ];
+                  items.addAll(
+                    ventas.value.map(
+                      (e) =&gt; pw.TableRow(
+                        children: [
+                          pw.Padding(
+                              padding: const pw.EdgeInsets.all(2.0),
+                              child: pw.Text(e.cliente.id)),
+                          pw.Padding(
+                              padding: const pw.EdgeInsets.all(2.0),
+                              child: pw.Text(e.empleado.id)),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(2.0),
+                            child: pw.Text(
+                              formatDate.format(
+                                e.fecha.toDate(),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                  &#47;* final imageProvider = *&#47;
+                  &#47;*     Image.asset(&quot;&#47;images&#47;san_esteban.jpg&quot;).image; *&#47;
+                  &#47;* final image = pw.Image(imageProvider); *&#47;
+                  return pw.ListView(
+                    children: [
+                      pw.Text(
+                        &quot;Lacteos san esteban&quot;,
+                        style: pw.TextStyle(
+                            fontSize: 25.0, fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.SizedBox(height: 10.0),
+                      pw.Table(
+                        children: items,
+                        border: pw.TableBorder.all(width: 1.0),
+                      )
+                    ],
+                  );
+                },
+              ),
+            );
+            final documents = await getApplicationDocumentsDirectory();
+            print(&quot;documents path: ${documents.path}&quot;);
+            final filePath =
+                &quot;${documents.path}&#47;informe de ventas ${formatDatePdf.format(DateTime.now())}&quot;;
+            try {
+              final file = File(filePath);
+              await file.writeAsBytes(await pdf.save());
+            } catch (e) {
+              print(e);
+            }
+            OpenFilex.open(filePath);
+          },
+          child: Text(
+            &quot;Guardar PDF&quot;,
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+        )
+      ],
+    ),
+    body: Obx(() =&gt; StreamBuilder(
+        stream: ventasCollection
+            .where(&quot;cliente&quot;, isEqualTo: rxCliente.value)
+            .where(&quot;empleado&quot;, isEqualTo: rxEmpleado.value)
+            .where(&quot;fecha&quot;, isLessThanOrEqualTo: rxFechaInicial.value)
+            .where(&quot;fecha&quot;, isGreaterThanOrEqualTo: rxFechaFinal.value)
+            .orderBy(&quot;fecha&quot;, descending: true)
+            .snapshots(),
+        builder: (context, snap) {
+          if (snap.hasError) {
+            print(&quot;Snap Error: ${snap.error}&quot;);
+            return const Center(
+              child: Text(&quot;Ups ha ocurrido un error&quot;),
+            );
+          }
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          ventas.value = snap.data!.docs.map((e) =&gt; e.data()).toList();
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                primary: false,
+                automaticallyImplyLeading: false,
+                title: Text(&quot;${snap.data!.docs.length} Resultados&quot;),
+                actions: [
+                  Wrap(
+                    spacing: 2.0,
+                    children: [
+                      Visibility(
+                        visible: rxEmpleado.value != null,
+                        child: ChoiceChip(
+                          label: Row(
+                            children: [
+                              Text(rxEmpleado.value != null
+                                  ? rxEmpleado.value!.id.substring(0, 10)
+                                  : &quot;Empleado&quot;),
+                              const Icon(Icons.close)
+                            ],
+                          ),
+                          selected: rxEmpleado.value != null,
+                          onSelected: (value) {
+                            if (!value) {
+                              rxEmpleado.value = null;
+                            }
+                          },
+                        ),
+                      ),
+                      Visibility(
+                        visible: rxCliente.value != null,
+                        child: ChoiceChip(
+                          label: Row(
+                            children: [
+                              Text(rxCliente.value != null
+                                  ? rxCliente.value!.id.substring(0, 10)
+                                  : &quot;Cliente&quot;),
+                              const Icon(Icons.close)
+                            ],
+                          ),
+                          selected: rxCliente.value != null,
+                          onSelected: (value) {
+                            if (!value) {
+                              rxCliente.value = null;
+                            }
+                          },
+                        ),
+                      ),
+                      ChoiceChip(
+                        label: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(&quot;Fecha&quot;),
+                            Icon(
+                              rxFechaInicial.value != null
+                                  ? Icons.close
+                                  : Icons.expand_more,
+                            )
+                          ],
+                        ),
+                        selected: rxFechaFinal.value != null ||
+                            rxFechaInicial.value != null,
+                        onSelected: (value) {
+                          if (!value) {
+                            rxFechaFinal.value = null;
+                            rxFechaInicial.value = null;
+                            return;
+                          }
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) =&gt; Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        &quot;Fecha&quot;,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(&quot;Aplicar&quot;),
+                                      )
+                                    ],
+                                  ),
+                                  Text(&quot;Fecha inicial&quot;,
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).hintColor)),
+                                  OutlinedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Obx(
+                                          () =&gt; Text(
+                                              rxFechaInicial.value != null
+                                                  ? formatDate.format(
+                                                      rxFechaInicial.value!
+                                                          .toDate())
+                                                  : &quot;Seleccionar fecha&quot;),
+                                        ),
+                                        const Icon(Icons.date_range)
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      final fechaInical =
+                                          await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2021),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (fechaInical != null) {
+                                        rxFechaInicial.value =
+                                            Timestamp.fromDate(
+                                          fechaInical.add(
+                                            const Duration(days: 1),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(&quot;Fecha final&quot;,
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).hintColor)),
+                                  OutlinedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Obx(() =&gt; Text(rxFechaFinal.value !=
+                                                null
+                                            ? formatDate.format(
+                                                rxFechaFinal.value!.toDate())
+                                            : &quot;Seleccionar fecha&quot;)),
+                                        const Icon(Icons.date_range)
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      final fechaFinal = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2021),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (fechaFinal != null) {
+                                        rxFechaFinal.value =
+                                            Timestamp.fromDate(
+                                          fechaFinal,
+                                        );
+                                      }
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  )
+                ],
+                pinned: true,
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  snap.data!.docs.map(
+                    (e) {
+                      const boldtext = TextStyle(fontWeight: FontWeight.bold);
+                      final items = &lt;Widget&gt;[
+                        const Text(
+                          &quot;Productos:&quot;,
+                          style: boldtext,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                      ];
+                      double total = 0;
+                      items.addAll(
+                        e.data().detalles.map(
+                          (d) {
+                            total += d.precio;
+                            return Text(
+                                &quot;${d.cantidad} ${d.unidadMedida} ${d.producto.id} L.${d.precio}&quot;);
+                          },
+                        ),
+                      );
+                      items.addAll([
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          &quot;Total: $total&quot;,
+                          style: boldtext,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(&quot;Cliente: ${e.data().cliente.id}&quot;),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          &quot;Empleado: ${e.data().empleado.id}&quot;,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Chip(
+                          label: Text(
+                            formatDateTime.format(
+                              e.data().fecha.toDate(),
+                            ),
+                          ),
+                        ),
+                      ]);
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: items,
+                          ),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                ),
+              )
+            ],
+          );
+        })),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed(&quot;&#47;ventas_form&quot;);
+      },
+      child: const Icon(Icons.add),
+    ),
+  );
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">lacteos_san_esteban_app</a></li>
+  <li><a href="../../pages_ventas_ventas_page/pages_ventas_ventas_page-library.html">ventas_page</a></li>
+  <li><a href="../../pages_ventas_ventas_page/VentasPage-class.html">VentasPage</a></li>
+  <li class="self-crumb">build method</li>
+</ol>
+
+
+    <h5>VentasPage class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../pages_ventas_ventas_page/VentasPage-class.html#constructors">Constructors</a></li>
+          <li><a href="../../pages_ventas_ventas_page/VentasPage/VentasPage.html">VentasPage</a></li>
+
+
+    <li class="section-title">
+      <a href="../../pages_ventas_ventas_page/VentasPage-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/cliente.html">cliente</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/empleado.html">empleado</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/formatDate.html">formatDate</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/formatDatePdf.html">formatDatePdf</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/formatDateTime.html">formatDateTime</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/pdf.html">pdf</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/rxCliente.html">rxCliente</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/rxEmpleado.html">rxEmpleado</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/rxFechaFinal.html">rxFechaFinal</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/rxFechaInicial.html">rxFechaInicial</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/ventas.html">ventas</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/ventasCollection.html">ventasCollection</a></li>
+
+    <li class="section-title"><a href="../../pages_ventas_ventas_page/VentasPage-class.html#instance-methods">Methods</a></li>
+    <li><a href="../../pages_ventas_ventas_page/VentasPage/build.html">build</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">toDiagnosticsNode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">toStringDeep</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">toStringShallow</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/toStringShort.html">toStringShort</a></li>
+
+    <li class="section-title inherited"><a href="../../pages_ventas_ventas_page/VentasPage-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    lacteos_san_esteban_app
+      1.0.0+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
