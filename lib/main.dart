@@ -8,6 +8,7 @@ import 'package:lacteos_san_esteban_app/pages/empleados/empleados_form.dart';
 import 'package:lacteos_san_esteban_app/pages/home_page.dart';
 import 'package:lacteos_san_esteban_app/pages/login_page.dart';
 import 'package:lacteos_san_esteban_app/pages/produccion/produccion_form.dart';
+import 'package:lacteos_san_esteban_app/pages/produccion/producto_form.dart';
 import 'package:lacteos_san_esteban_app/pages/proveedores/proveedores_form.dart';
 import 'package:lacteos_san_esteban_app/pages/ventas/ventas_form.dart';
 import 'firebase_options.dart';
@@ -32,6 +33,7 @@ Future<void> main() async {
       "/compras_form": (context) => ComprasForm(),
       "/ventas_form": (context) => VentasForm(),
       "/produccion_form": (context) => ProduccionForm(),
+      "/productos_form": (context) => ProductoForm(),
       "/cuenta": (context) => CuentaPage(),
       "/clientes_form": (context) => ClientesForm(),
       "/proveedores_form": (context) => ProveedoresForm(),
