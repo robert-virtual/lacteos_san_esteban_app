@@ -53,10 +53,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCw0Hgtfd5xVcqFy3rwkdKV9wSDPoW-84Y',
-    appId: '1:96975403456:android:53be4667efcab2fd4ab025',
-    messagingSenderId: '96975403456',
-    projectId: 'lacteos-san-esteban-e6d6c',
-    storageBucket: 'lacteos-san-esteban-e6d6c.appspot.com',
+    apiKey: 'AIzaSyBBCcjoI-EQAvXxGFfHt8R4oBX8n-QASts',
+    appId: '1:305014863441:android:dd01ce2e6c75426219aa70',
+    messagingSenderId: '305014863441',
+    projectId: 'lacteossanestebanapp',
+    storageBucket: 'lacteossanestebanapp.appspot.com',
   );
 }
