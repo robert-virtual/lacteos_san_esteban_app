@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 class ClientesForm extends StatelessWidget {
   ClientesForm({super.key});
+  var saving = false.obs;
   final empleadosRef = FirebaseFirestore.instance
       .collection("empleados")
       .withConverter<Persona>(
@@ -70,40 +71,47 @@ class ClientesForm extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final res = clientesRef.doc(correo.text.trim());
-          final cliente = Persona(
-            correo: correo.text.trim(),
-            nombre: nombre.text.trim().toLowerCase(),
-            telefono: telefono.text.trim(),
-            direccion: direccion.text.trim().toLowerCase(),
-            fechaRegistro: Timestamp.now(),
-          );
-          res
-              .set(
-            cliente,
-          )
-              .then(
-            (value) {
-              bitacoraRef.add(
-                {
-                  "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
-                  "nombreEmpleado":
-                      FirebaseAuth.instance.currentUser!.displayName,
-                  "empleadoRef": empleadosRef
-                      .doc(FirebaseAuth.instance.currentUser!.email),
-                  "fecha": Timestamp.now(),
-                  "accion": "Insertar cliente",
-                  "datos": cliente.toJson()
-                },
-              );
-              Navigator.pop(context, res);
-            },
-          );
-        },
-        icon: const Icon(Icons.save),
-        label: const Text("Guardar"),
+      floatingActionButton: Obx(
+        () => FloatingActionButton.extended(
+          onPressed: () {
+            if (saving.value) {
+              return;
+            }
+            saving.value = true;
+            final res = clientesRef.doc(correo.text.trim());
+            final cliente = Persona(
+              correo: correo.text.trim(),
+              nombre: nombre.text.trim().toLowerCase(),
+              telefono: telefono.text.trim(),
+              direccion: direccion.text.trim().toLowerCase(),
+              fechaRegistro: Timestamp.now(),
+            );
+            res
+                .set(
+              cliente,
+            )
+                .then(
+              (value) {
+                bitacoraRef.add(
+                  {
+                    "correoEmpleado": FirebaseAuth.instance.currentUser!.email,
+                    "nombreEmpleado":
+                        FirebaseAuth.instance.currentUser!.displayName,
+                    "empleadoRef": empleadosRef
+                        .doc(FirebaseAuth.instance.currentUser!.email),
+                    "fecha": Timestamp.now(),
+                    "accion": "Insertar cliente",
+                    "datos": cliente.toJson()
+                  },
+                );
+                saving.value = true;
+                Navigator.pop(context, res);
+              },
+            );
+          },
+          icon: const Icon(Icons.save),
+          label: Text(saving.value ? "Guardando..." : "Guardar"),
+        ),
       ),
     );
   }
