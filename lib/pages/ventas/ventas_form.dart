@@ -17,7 +17,7 @@ class VentasForm extends StatelessWidget {
           toFirestore: (producto, _) => producto.toJson())
       .snapshots();
   final unidadesMedidaStream =
-      FirebaseFirestore.instance.collection("unidades_medida").snapshots();
+      FirebaseFirestore.instance.collection("unidades_medidas").snapshots();
   final clientesStream = FirebaseFirestore.instance
       .collection("clientes")
       .withConverter<Persona>(
