@@ -1,4 +1,4 @@
-package com.example.lacteos_san_esteban_app
+package app.netlify.lacteossanesteban
 
 import io.flutter.embedding.android.FlutterActivity
 

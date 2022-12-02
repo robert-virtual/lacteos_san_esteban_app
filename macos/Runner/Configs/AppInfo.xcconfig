@@ -8,7 +8,7 @@
 PRODUCT_NAME = lacteos_san_esteban_app
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.lacteosSanEstebanApp
+PRODUCT_BUNDLE_IDENTIFIER = app.netlify.lacteossanesteban;
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2022 com.example. All rights reserved.

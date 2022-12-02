@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:305014863441:android:171bececbf6a334619aa70",
+        "android_client_info": {
+          "package_name": "app.netlify.lacteossanesteban"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305014863441-0ie2tk8t02st17d1aip9a57m3t5ugte3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBCcjoI-EQAvXxGFfHt8R4oBX8n-QASts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305014863441-0ie2tk8t02st17d1aip9a57m3t5ugte3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:305014863441:android:dd01ce2e6c75426219aa70",
         "android_client_info": {
           "package_name": "com.example.lacteos_san_esteban_app"
